@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HUNTER x HUNTER: Whale Island (Nen RPG Vertical Slice)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#05080f;font-family:"Segoe UI",system-ui,sans-serif;color:#e8ecf4;user-select:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,8,16,.74);z-index:30;overflow:auto;padding:12px}
+.ov.show{display:flex}
+.card{background:#0e1626f2;border:1px solid #2e486e;border-radius:12px;padding:18px 22px;max-width:960px;width:100%;max-height:94vh;overflow:auto;box-shadow:0 12px 50px #000b}
+h1{font-size:28px;letter-spacing:1px;color:#ffd36b}
+h2{font-size:19px;color:#ffd36b;margin-bottom:8px}
+h3{font-size:14px;color:#8fd0ff;margin:12px 0 5px;text-transform:uppercase;letter-spacing:1px}
+p,li{font-size:14px;line-height:1.5;color:#cfd8ea}
+ul{padding-left:20px}
+.sub{color:#8fa3c4;font-size:13px}
+button,.btn{background:#1d3558;color:#fff;border:1px solid #3d669d;border-radius:7px;padding:7px 14px;font-size:14px;cursor:pointer;margin:3px 4px 3px 0}
+button:hover{background:#2a4d82}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.pri{background:#b8791a;border-color:#ffc35a}
+button.pri:hover{background:#d8921f}
+input,select,textarea{background:#0a1220;color:#fff;border:1px solid #38577f;border-radius:6px;padding:6px 8px;font-size:14px;max-width:100%}
+input[type=color]{padding:0;width:44px;height:30px}
+input[type=range]{width:150px;padding:0}
+label{display:block;font-size:13px;color:#9fb4d6;margin:8px 0 3px}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.col{flex:1;min-width:230px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;border-bottom:1px solid #2e486e;padding-bottom:8px}
+.tabs button{margin:0}
+.tabs button.on{background:#b8791a;border-color:#ffc35a}
+.bar{position:relative;height:15px;background:#0b1220;border:1px solid #2a3b57;border-radius:8px;overflow:hidden;margin:4px 0}
+.bar i{position:absolute;left:0;top:0;bottom:0;width:50%;display:block;transition:width .08s}
+.bar span{position:absolute;inset:0;font-size:11px;text-align:center;line-height:14px;color:#fff;text-shadow:0 0 3px #000}
+.hp i{background:linear-gradient(#e05555,#a02020)}
+.st i{background:linear-gradient(#e8d35a,#a58b1c)}
+.au i{background:linear-gradient(#6fd3ff,#2a74d6)}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:2px 0;border-bottom:1px dotted #25354f}
+.tag{display:inline-block;background:#18304f;border:1px solid #38577f;border-radius:10px;padding:1px 9px;font-size:12px;margin:2px 3px 2px 0}
+.good{color:#7de39b}.bad{color:#ff8a8a}.warn{color:#ffd36b}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}
+#hl{position:absolute;left:14px;top:12px;width:280px}
+#pname{font-size:14px;font-weight:600;text-shadow:0 0 4px #000}
+#chips{min-height:20px}
+#mm{position:absolute;right:14px;top:12px;width:170px;text-align:center}
+#mmc{border:2px solid #36527c;border-radius:50%;background:#0a1830;display:block}
+#comp{font-size:12px;margin-top:3px;text-shadow:0 0 4px #000}
+#qt{position:absolute;left:14px;top:150px;width:290px;font-size:13px;background:#0a1220aa;border-left:3px solid #ffc35a;padding:8px 10px;border-radius:0 8px 8px 0}
+#qt b{color:#ffd36b}
+#boss{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:420px;display:none;text-align:center}
+#bossn{font-size:14px;text-shadow:0 0 4px #000;color:#ffb1b1}
+#tgt{position:absolute;left:50%;top:60px;transform:translateX(-50%);font-size:13px;text-shadow:0 0 4px #000;text-align:center}
+#abil{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px}
+.slot{position:relative;width:86px;height:60px;background:#0b1424dd;border:1px solid #3d669d;border-radius:8px;padding:4px;font-size:11px;overflow:hidden;text-align:center}
+.slot b{display:block;color:#ffd36b;font-size:12px}
+.slot .cdo{position:absolute;left:0;right:0;bottom:0;background:#000a;height:0}
+.slot.lock{opacity:.45}
+#prompt{position:absolute;left:50%;bottom:98px;transform:translateX(-50%);font-size:15px;background:#0a1220cc;border:1px solid #ffc35a;border-radius:8px;padding:5px 14px;display:none}
+#fps{position:absolute;right:14px;bottom:10px;font-size:11px;color:#8fa3c4}
+#lockr{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border:2px solid #ff6b6b;border-radius:50%;display:none}
+#toasts{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:25;pointer-events:none;text-align:center}
+.toast{background:#0a1220ee;border:1px solid #ffc35a;border-radius:8px;padding:6px 16px;margin:4px;font-size:14px;animation:fade 3.6s forwards}
+@keyframes fade{0%{opacity:0;transform:translateY(8px)}8%{opacity:1;transform:none}85%{opacity:1}100%{opacity:0}}
+#dmgs{position:fixed;inset:0;pointer-events:none;z-index:12;overflow:hidden}
+.dmg{position:absolute;font-weight:700;font-size:18px;text-shadow:0 0 4px #000,0 0 2px #000;transform:translate(-50%,-50%);display:none;white-space:nowrap}
+#dlg{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:min(780px,96%);z-index:28;background:#0e1626f5;border:1px solid #ffc35a;border-radius:12px;padding:14px 18px;display:none}
+#dlg .nm{color:#ffd36b;font-weight:700;margin-bottom:4px}
+#dlg p{font-size:15px;margin-bottom:8px}
+.bf{height:22px;background:#0b1220;border:2px solid #3d669d;border-radius:12px;position:relative;margin:14px 0}
+.zone{position:absolute;top:0;bottom:0;background:#2fbf6b88;border-left:2px solid #7de39b;border-right:2px solid #7de39b}
+.mark{position:absolute;top:-4px;bottom:-4px;width:6px;background:#fff;border-radius:3px;margin-left:-3px}
+.hint{font-size:12px;color:#8fa3c4}
+table{border-collapse:collapse;width:100%}
+td,th{font-size:13px;padding:3px 6px;border-bottom:1px solid #22324b;text-align:left;vertical-align:top}
+th{color:#8fd0ff}
+.err{color:#ff8a8a;font-size:13px;margin-top:6px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <div id="hl">
+    <div id="pname"></div>
+    <div class="bar hp"><i id="hpb"></i><span id="hpt"></span></div>
+    <div class="bar st"><i id="stb"></i></div>
+    <div class="bar au"><i id="aub"></i><span id="aut"></span></div>
+    <div id="chips"></div>
+  </div>
+  <div id="mm"><canvas id="mmc" width="170" height="170"></canvas><div id="comp"></div></div>
+  <div id="qt"></div>
+  <div id="boss"><div id="bossn"></div><div class="bar hp" style="height:18px"><i id="bossb"></i></div></div>
+  <div id="tgt"></div>
+  <div id="abil"></div>
+  <div id="prompt"></div>
+  <div id="fps"></div>
+  <div id="lockr"></div>
+</div>
+
+<div id="ov" class="ov"><div class="card" id="ovc"></div></div>
+<div id="drillov" class="ov"><div class="card" id="drillc" style="max-width:640px"></div></div>
+<div id="dlg"></div>
+<div id="toasts"></div>
+<div id="dmgs"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+/* ======================================================================
+   HUNTER x HUNTER: WHALE ISLAND  -  single-file Three.js vertical slice
+   Unofficial fan project. All models/sounds are procedural placeholders.
+   Sections: Utils | Data | Audio | Renderer+World | Entities | Player |
+             Combat | Nen | Enemy AI | Quests+Dialogue | Inventory |
+             Save | UI | Main loop
+   ====================================================================== */
+if (typeof THREE === 'undefined') {
+  document.body.insertAdjacentHTML('beforeend','<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:30px;text-align:center;z-index:99;background:#05080f">Three.js could not be loaded from cdnjs. This single-file game needs an internet connection for that one library.</div>');
+  throw new Error('THREE missing');
+}
+
+/* ============================ UTILS ============================ */
+const $ = s => document.querySelector(s);
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const lerp = (a,b,t) => a+(b-a)*t;
+const TAU = Math.PI*2;
+const smooth = (a,b,x) => { const t = clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+function rng(seed){ let s = seed>>>0; return () => (s = (s*1664525+1013904223)>>>0)/4294967296; }
+function angDiff(a,b){ let d=(b-a)%TAU; if(d>Math.PI)d-=TAU; if(d<-Math.PI)d+=TAU; return d; }
+const fwd = a => ({x:Math.sin(a), z:Math.cos(a)});
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rint = (a,b) => Math.floor(a+Math.random()*(b-a+1));
+function mat(c,o){ return new THREE.MeshLambertMaterial(Object.assign({color:c},o||{})); }
+
+/* ============================ DATA ============================= */
+// Nen hexagon order (clockwise). Affinity by ring distance from your own category:
+// 0 -> 100%, 1 -> 80%, 2 -> 60%, 3 (opposite) -> 40%. (Commonly cited chart; see Research Index.)
+const CATS = ['Enhancement','Transmutation','Emission','Specialization','Conjuration','Manipulation'];
+const CATINFO = {
+  Enhancement:{col:'#ff9f43',d:'Strengthens the body and what it touches. Straightforward and sturdy: your aura-infused strikes hit harder.'},
+  Transmutation:{col:'#ff6bd6',d:'Changes the properties of aura (elastic, sticky, electric). Creative, adaptable tricks.'},
+  Emission:{col:'#6fd3ff',d:'Projects aura away from the body. Strong at range, weaker up close.'},
+  Specialization:{col:'#c8a8ff',d:'Abilities that fit no other category. Rare; hard to predict, narrow but strange.'},
+  Conjuration:{col:'#7de39b',d:'Creates physical objects out of aura. Binding and control, usually with strict conditions.'},
+  Manipulation:{col:'#ffd36b',d:'Controls objects or creatures. Excellent at making enemies work against each other.'}
+};
+function affinity(a,b){ const i=CATS.indexOf(a), j=CATS.indexOf(b); if(i<0||j<0) return 0; const d=Math.min(Math.abs(i-j),6-Math.abs(i-j)); return [100,80,60,40][d]; }
+
+const ITEMS = {
+  herb:{n:'Healing Herb',d:'Restores 35 HP.',use:()=>{ heal(35); }, buy:30, sell:12},
+  fish:{n:'Grilled Fish',d:'Restores 60 stamina and 10 HP.',use:()=>{ S.st=Math.min(maxST(),S.st+60); heal(10); }, buy:20, sell:8},
+  tonic:{n:'Aura Tonic',d:'Restores 30 aura (needs Ten learned).',use:()=>{ if(!S.nen.unlocked){toast('You cannot sense aura yet.');return false;} S.aura=Math.min(maxAura(),S.aura+30); }, buy:60, sell:25},
+  pelt:{n:'Foxbear Pelt',d:'Trophy and trade good.',use:null, sell:40},
+  letter:{n:'Hunter Exam Registration Letter',d:'Quest item. Your invitation to the next stage of your journey.',use:null, sell:0}
+};
+
+// Signature techniques (ORIGINAL to this game, labelled; they follow category flavour only)
+const SIG = {
+  Enhancement:{name:'Aura Rush',eff:'dash',power:5,range:8,cd:6,cost:18,d:'Burst forward, striking anything in your path.'},
+  Transmutation:{name:'Elastic Pull',eff:'pull',power:3,range:14,cd:7,cost:16,d:'Stretchy aura hooks a target and snaps it toward you.'},
+  Emission:{name:'Aura Bolt',eff:'bolt',power:5,range:26,cd:3,cost:14,d:'Fire a bolt of aura that bursts on impact.'},
+  Conjuration:{name:'Conjured Chains',eff:'bind',power:5,range:12,cd:10,cost:22,fragile:true,d:'Chains bind a target. Fragile: they shatter if YOU are hit.'},
+  Manipulation:{name:'Puppet Thread',eff:'mark',power:5,range:12,cd:14,cost:30,d:'A thread takes control of a creature: it attacks other enemies.'},
+  Specialization:{name:'Siphon Palm',eff:'drain',power:5,range:4,cd:6,cost:20,d:'Strange contact ability: harms the target and feeds you.'}
+};
+const KO = {name:'Ko (Focused Fist)',eff:'strike',power:12,range:3,cd:8,cost:25,ko:true,d:'Concentrate aura in the fist: huge strike. The rest of your body is left defenseless for 4s.'};
+
+const EFFECTS = {
+  strike:{n:'Strike (close arc)',base:1.0,fit:['Enhancement','Transmutation']},
+  bolt:{n:'Bolt (projectile)',base:1.5,fit:['Emission','Transmutation']},
+  bind:{n:'Bind (hold target)',base:3.0,fit:['Conjuration','Manipulation','Transmutation']},
+  heal:{n:'Heal (self)',base:2.0,fit:['Enhancement','Specialization','Conjuration']},
+  dash:{n:'Dash strike (mobility)',base:2.0,fit:['Enhancement','Transmutation','Emission']},
+  mark:{n:'Puppet (control)',base:4.0,fit:['Manipulation','Specialization']},
+  drain:{n:'Drain (touch)',base:3.0,fit:['Specialization','Manipulation']},
+  pull:{n:'Pull (yank target)',base:2.0,fit:['Transmutation','Manipulation','Conjuration']}
+};
+const VOWS = {
+  ren:{n:'Only while Ren is active',pts:3},
+  melee:{n:'Only within 4 m of an enemy',pts:2.5},
+  life:{n:'Costs 15% max HP per use',pts:3},
+  exhaust:{n:'Ten is sealed for 6s after use',pts:2},
+  night:{n:'Only usable at night (18:00-06:00)',pts:3}
+};
+
+const ATK = {
+  bite:{wind:0.55,rec:0.7,range:3.2,arc:0.9,mult:1,block:true,kind:'melee',tg:'ring'},
+  lunge:{wind:0.8,rec:1.0,range:2.6,arc:1.0,mult:1.25,block:true,kind:'lunge',dist:7,dur:0.3,tg:'line'},
+  sweep:{wind:1.0,rec:1.1,range:5.8,arc:Math.PI,mult:1.1,block:true,kind:'melee',tg:'ring'},
+  grab:{wind:0.9,rec:1.2,range:3.8,arc:0.8,mult:1.5,block:false,kind:'melee',tg:'ring'},
+  charge:{wind:1.4,rec:1.8,range:2.8,arc:1.2,mult:1.8,block:false,kind:'charge',dist:20,dur:0.9,tg:'line'}
+};
+const ETYPES = {
+  foxbear:{name:'Foxbear',lvl:2,hp:90,dmg:12,spd:3.0,chase:5.4,scale:1.5,col:0xb86a2e,guard:1,atks:['bite','lunge'],rad:1.2,xp:45,stagRes:1,detect:16},
+  alpha:{name:'Alpha Foxbear',lvl:6,hp:520,dmg:22,spd:3.4,chase:5.8,scale:2.5,col:0x4d2a1a,guard:0.3,atks:['bite','lunge','sweep','grab','charge'],rad:2.4,xp:420,stagRes:0.3,boss:true,detect:18}
+};
+
+const QUIZ = [
+  {q:'A stranger rows off with the fish you caught. You...',a:[['Chase them down and take it back.',{Enhancement:2}],['Call out a deal that makes them bring it back themselves.',{Manipulation:2}],['Throw a stone to snag the oar from afar.',{Emission:2}],['Catch another. You can make something from nothing.',{Conjuration:2}]]},
+  {q:'Your fishing line keeps snapping. You...',a:[['Test it with a harder pull until you know its limit.',{Enhancement:2}],['Rub it with sap until it turns sticky and stretchy.',{Transmutation:2}],['Learn the current and drift with it.',{Manipulation:1,Specialization:1}],['Weave a new line from grass.',{Conjuration:2}]]},
+  {q:'On a stormy night you hear a noise outside. You...',a:[['Step out and face it.',{Enhancement:1,Emission:1}],['Hold still and listen until it moves.',{Specialization:1,Manipulation:1}],['Light a flame and watch what shadows it throws.',{Transmutation:2}],['Think of a trap and set it.',{Conjuration:1,Manipulation:1}]]},
+  {q:'Which feels most like you?',a:[['Stubborn and direct.',{Enhancement:2}],['Playful and unpredictable.',{Transmutation:2}],['Patient and exact.',{Emission:1,Manipulation:1}],['Odd. People cannot quite place me.',{Specialization:2}]]},
+  {q:'Facing someone stronger, you would...',a:[['Hit harder.',{Enhancement:2}],['Hit from a safe distance.',{Emission:2}],['Make them fight someone else.',{Manipulation:2}],['Prepare something unexpected.',{Conjuration:1,Transmutation:1,Specialization:1}]]}
+];
+
+const DRILL = {
+  ten:{n:'Ten: steady aura flow',speed:0.85,zone:0.28,d:'Keep the flow even. Press SPACE when the marker is inside the green band.'},
+  zetsu:{n:'Zetsu: suppress aura',speed:1.05,zone:0.22,d:'Shut the flow off cleanly. Time it right.'},
+  ren:{n:'Ren: raise output',speed:1.3,zone:0.18,d:'Surge the aura at the right instant. Fast and unforgiving.'}
+};
+
+/* ===================== PLAYER SAVE STATE (S) ==================== */
+function newState(){
+  return {
+    v:1,name:'Hunter',bg:'fisher',
+    look:{skin:'#e0ac82',hair:'#2b2118',hairStyle:'spiky',outfit:'#2f8f5b',build:'average',style:'brawler'},
+    pos:{x:0,z:12},hp:100,st:100,aura:0,level:1,xp:0,clock:8,jenny:100,
+    nen:{unlocked:false,cat:null,aff:null,ten:0,zetsu:0,ren:0,hatsu:0,sess:{day:-1,n:0}},
+    customs:[null,null],
+    inv:{herb:2,fish:1},
+    quests:{main:{step:0,kills:0},herb:{state:0}},
+    rel:{mito:{trust:20,respect:10,fear:0},goro:{trust:5,respect:5,fear:0}},
+    faction:{village:10,hunters:0},
+    license:{stage:0},
+    stats:{attacks:0,heavy:0,blocks:0,dodges:0,pickups:0,zetsu:0,hatsu:0,kills:0,deaths:0},
+    taken:[],respawnAt:{x:0,z:12},flags:{alphaDead:false,sliceDone:false,askedLore:false},playtime:0
+  };
+}
+let S = newState();
+const maxHP = () => 100+S.level*15+(S.look.build==='strong'?15:0)+(S.bg==='wanderer'?10:0);
+const maxST = () => 100+S.level*3+(S.bg==='fisher'?10:0);
+const maxAura = () => S.nen.unlocked ? Math.round(40+S.level*6+(S.nen.ten+S.nen.ren+S.nen.zetsu)*0.25+(S.bg==='scholar'?10:0)) : 0;
+const xpNeed = () => Math.round(60*Math.pow(S.level,1.4));
+const aff = cat => S.nen.cat ? affinity(S.nen.cat,cat) : 0;
+function heal(n){ S.hp=Math.min(maxHP(),S.hp+n); }
+const hoursToday = () => ((S.clock%24)+24)%24;
+const dayNo = () => Math.floor(S.clock/24);
+
+/* ============================ AUDIO ============================ */
+const Aud = {
+  ctx:null,master:null,vol:0.6,music:true,noiseBuf:null,amb:null,ambF:null,
+  init(){
+    if(this.ctx) return;
+    try{
+      const C = window.AudioContext||window.webkitAudioContext; if(!C) return;
+      this.ctx = new C(); this.master = this.ctx.createGain(); this.master.gain.value=this.vol; this.master.connect(this.ctx.destination);
+      const len=this.ctx.sampleRate*2, buf=this.ctx.createBuffer(1,len,this.ctx.sampleRate), d=buf.getChannelData(0);
+      for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+      this.noiseBuf=buf;
+      const src=this.ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+      const f=this.ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=500;
+      const g=this.ctx.createGain(); g.gain.value=0; src.connect(f); f.connect(g); g.connect(this.master); src.start();
+      this.amb=g; this.ambF=f;
+      const lfo=this.ctx.createOscillator(); lfo.frequency.value=0.12; const lg=this.ctx.createGain(); lg.gain.value=160; lfo.connect(lg); lg.connect(f.frequency); lfo.start();
+    }catch(e){ this.ctx=null; }
+  },
+  setVol(v){ this.vol=v; if(this.master) this.master.gain.value=v; },
+  tone(freq,dur,type,vol,slide,delay){
+    if(!this.ctx) return; const t=this.ctx.currentTime+(delay||0);
+    const o=this.ctx.createOscillator(), g=this.ctx.createGain(); o.type=type||'sine';
+    o.frequency.setValueAtTime(freq,t); if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(20,freq+slide),t+dur);
+    g.gain.setValueAtTime(vol||0.15,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t+dur+0.03);
+  },
+  noise(dur,vol,freq,type){
+    if(!this.ctx||!this.noiseBuf) return; const t=this.ctx.currentTime;
+    const s=this.ctx.createBufferSource(); s.buffer=this.noiseBuf; const f=this.ctx.createBiquadFilter(); f.type=type||'lowpass'; f.frequency.value=freq||1200;
+    const g=this.ctx.createGain(); g.gain.setValueAtTime(vol||0.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    s.connect(f); f.connect(g); g.connect(this.master); s.start(t,Math.random()); s.stop(t+dur+0.05);
+  },
+  hit(){ this.noise(0.12,0.3,900); this.tone(120,0.12,'square',0.12,-60); },
+  swing(){ this.noise(0.15,0.12,3000,'highpass'); },
+  hurt(){ this.tone(90,0.25,'sawtooth',0.2,-40); this.noise(0.2,0.25,500); },
+  aura(){ this.tone(220,0.5,'sine',0.1,440); },
+  cast(){ this.tone(440,0.3,'triangle',0.14,330); this.noise(0.25,0.1,2500,'highpass'); },
+  zetsu(){ this.tone(300,0.4,'sine',0.08,-200); },
+  ui(){ this.tone(660,0.07,'square',0.05); },
+  roar(){ this.tone(70,0.9,'sawtooth',0.25,-30); this.noise(0.8,0.25,400); },
+  step(kind){ if(kind==='sand') this.noise(0.07,0.05,2500); else if(kind==='rock') this.noise(0.05,0.07,3500,'highpass'); else this.noise(0.06,0.045,1200); },
+  ambience(shore,bossOn){
+    if(!this.ctx||!this.amb) return;
+    this.amb.gain.value = (0.03+0.13*shore)*(this.music?1:0.6);
+  },
+  musicTick(){
+    if(!this.ctx||!this.music) return;
+    const sc=[261.6,293.7,329.6,392,440,523.3]; const n=sc[rint(0,5)]*(Math.random()<0.3?0.5:1);
+    this.tone(n,3.2,'sine',0.035); if(Math.random()<0.5) this.tone(n*1.5,3.0,'sine',0.02,0,0.4);
+  }
+};
+setInterval(()=>{ if(G.mode==='play'||G.mode==='title') Aud.musicTick(); },3600);
+
+/* ======================== RENDERER + WORLD ===================== */
+const G = {mode:'title',t:0,fps:60,hitstop:0,shake:0,graphics:{shadows:true,res:1,view:170,sens:1},lowFpsT:0,abilDirty:true,mapTick:0,lastHit:null,quizAns:[],drill:null,dialogNode:null,panelTab:'character'};
+const canvas = $('#c');
+const renderer = new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x7ec8ff);
+scene.fog = new THREE.Fog(0x9cc8e8,40,170);
+const camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,420);
+const hemi = new THREE.HemisphereLight(0xcfe8ff,0x4a5a3a,0.8); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xfff2d6,1.0);
+sun.castShadow = true; sun.shadow.mapSize.set(1024,1024);
+const sc_ = sun.shadow.camera; sc_.left=-45; sc_.right=45; sc_.top=45; sc_.bottom=-45; sc_.near=1; sc_.far=240;
+sun.shadow.bias=-0.0006;
+scene.add(sun); scene.add(sun.target);
+
+// ---- height function (shared by rendering and gameplay) ----
+function baseH(x,z){
+  const r = Math.hypot(x,z);
+  const hills = 5+2.6*Math.sin(x*0.06+1.3)*Math.cos(z*0.055)+1.6*Math.sin(x*0.13+z*0.11)+0.8*Math.sin(z*0.21-x*0.17);
+  const isl = clamp((84-r)/34,0,1);
+  let h = hills*isl-(1-isl)*6;
+  const dv = Math.hypot(x,z-10);
+  h = lerp(h,2.4,1-smooth(13,26,dv));
+  const dm = Math.hypot(x,z+58);
+  h += 13*Math.exp(-dm*dm/500);
+  return h;
+}
+const PIER = {x:8,zs:60,z0:57,z1:75};
+(function(){ for(let z=92;z>10;z-=0.5){ if(baseH(PIER.x,z)>0.3){ PIER.zs=z; break; } } PIER.z0=PIER.zs-3; PIER.z1=PIER.zs+15; })();
+function groundY(x,z){ let h=baseH(x,z); if(Math.abs(x-PIER.x)<1.4&&z>PIER.z0&&z<PIER.z1) h=Math.max(h,0.45); return h; }
+
+const world = {colliders:[],interact:[],enemies:[],npcs:[],herbs:[],proj:[],decor:{}};
+function blocked(x,z,r){
+  if(Math.hypot(x,z)>92) return true;
+  if(groundY(x,z)<-0.75) return true;
+  for(let i=0;i<world.colliders.length;i++){ const c=world.colliders[i]; const dx=x-c.x,dz=z-c.z,rr=c.r+r; if(dx*dx+dz*dz<rr*rr) return true; }
+  return false;
+}
+function slideMove(pos,dx,dz,r){
+  if(!blocked(pos.x+dx,pos.z+dz,r)){ pos.x+=dx; pos.z+=dz; return true; }
+  if(!blocked(pos.x+dx,pos.z,r)){ pos.x+=dx; return true; }
+  if(!blocked(pos.x,pos.z+dz,r)){ pos.z+=dz; return true; }
+  return false;
+}
+function findLand(x,z,minH,maxH){
+  minH=minH===undefined?1.3:minH; maxH=maxH===undefined?9:maxH;
+  for(let r=0;r<45;r+=1.5) for(let a=0;a<TAU;a+=0.5){
+    const xx=x+Math.cos(a)*r, zz=z+Math.sin(a)*r, h=baseH(xx,zz);
+    if(h>minH&&h<maxH&&!blocked(xx,zz,1.2)) return {x:xx,z:zz};
+  }
+  return {x,z};
+}
+
+// ---- terrain ----
+(function(){
+  const N=150, SZ=220; const geo=new THREE.PlaneGeometry(SZ,SZ,N,N); geo.rotateX(-Math.PI/2);
+  const pos=geo.attributes.position, col=new Float32Array(pos.count*3), c=new THREE.Color();
+  for(let i=0;i<pos.count;i++){
+    const x=pos.getX(i), z=pos.getZ(i), h=baseH(x,z); pos.setY(i,h);
+    const n=0.5+0.5*Math.sin(x*0.9)*Math.cos(z*0.8);
+    if(h<0) c.setRGB(0.5,0.47,0.36);
+    else if(h<0.5) c.setRGB(0.80,0.74,0.52);
+    else if(h<1.2) c.setRGB(0.62+0.1*n,0.66,0.38);
+    else if(h<8) c.setRGB(0.20+0.08*n,0.44+0.1*n,0.18);
+    else if(h<13) c.setRGB(0.40,0.38,0.34);
+    else c.setRGB(0.56,0.55,0.5);
+    col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+  }
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3)); geo.computeVertexNormals();
+  const m=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({vertexColors:true})); m.receiveShadow=true; scene.add(m);
+})();
+// ---- water ----
+const water = new THREE.Mesh(new THREE.PlaneGeometry(520,520),new THREE.MeshPhongMaterial({color:0x2a7fb8,transparent:true,opacity:0.82,shininess:90}));
+water.rotation.x=-Math.PI/2; scene.add(water);
+
+// ---- sky bodies ----
+const sunBall = new THREE.Mesh(new THREE.SphereGeometry(7,12,8),new THREE.MeshBasicMaterial({color:0xfff2b0,fog:false})); scene.add(sunBall);
+const moonBall = new THREE.Mesh(new THREE.SphereGeometry(5,12,8),new THREE.MeshBasicMaterial({color:0xdfe8ff,fog:false})); scene.add(moonBall);
+const stars = (function(){
+  const R=rng(99), n=420, p=new Float32Array(n*3);
+  for(let i=0;i<n;i++){ const a=R()*TAU,b=Math.acos(R()*0.9+0.1),r=330; p[i*3]=Math.cos(a)*Math.sin(b)*r; p[i*3+1]=Math.cos(b)*r; p[i*3+2]=Math.sin(a)*Math.sin(b)*r; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(p,3));
+  const s=new THREE.Points(g,new THREE.PointsMaterial({color:0xffffff,size:1.6,transparent:true,opacity:0,fog:false,sizeAttenuation:false})); s.frustumCulled=false; scene.add(s); return s;
+})();
+
+// ---- trees, grass, rocks (instanced) ----
+(function(){
+  const R=rng(7), spots=[];
+  for(let i=0;i<1400&&spots.length<260;i++){
+    const x=(R()-0.5)*150, z=(R()-0.5)*150, h=baseH(x,z);
+    if(h<1.3||h>10) continue;
+    if(Math.hypot(x,z-10)<22) continue;
+    if(Math.abs(x-PIER.x)<7&&z>PIER.z0-8) continue;
+    if(Math.hypot(x,z+52)<9) continue;
+    spots.push({x,z,h,s:0.8+R()*0.9});
+  }
+  const n=spots.length;
+  const tr=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.22,0.32,2.6,6),mat(0x6b4a2b),n);
+  const c1=new THREE.InstancedMesh(new THREE.ConeGeometry(1.7,3.2,7),mat(0x2f7a3c),n);
+  const c2=new THREE.InstancedMesh(new THREE.ConeGeometry(1.2,2.6,7),mat(0x3a8d48),n);
+  const d=new THREE.Object3D();
+  spots.forEach((s,i)=>{
+    const ry=R()*6;
+    d.rotation.set(0,ry,0); d.scale.set(s.s,s.s,s.s); d.position.set(s.x,s.h+1.3*s.s,s.z); d.updateMatrix(); tr.setMatrixAt(i,d.matrix);
+    d.position.set(s.x,s.h+3.3*s.s,s.z); d.updateMatrix(); c1.setMatrixAt(i,d.matrix);
+    d.scale.set(s.s*0.72,s.s*0.72,s.s*0.72); d.position.set(s.x,s.h+4.9*s.s,s.z); d.updateMatrix(); c2.setMatrixAt(i,d.matrix);
+    world.colliders.push({x:s.x,z:s.z,r:0.55*s.s});
+  });
+  [tr,c1,c2].forEach(m=>{ m.frustumCulled=false; m.castShadow=true; scene.add(m); });
+  // grass tufts
+  const gp=[]; for(let i=0;i<2200&&gp.length<650;i++){ const x=(R()-0.5)*170,z=(R()-0.5)*170,h=baseH(x,z); if(h>1.2&&h<9) gp.push({x,z,h}); }
+  const gm=new THREE.InstancedMesh(new THREE.ConeGeometry(0.16,0.7,4),mat(0x4fae52),gp.length);
+  gp.forEach((s,i)=>{ d.rotation.set(0,R()*6,0); d.scale.set(1,0.7+R()*0.8,1); d.position.set(s.x,s.h+0.3,s.z); d.updateMatrix(); gm.setMatrixAt(i,d.matrix); });
+  gm.frustumCulled=false; scene.add(gm);
+  // rocks
+  const rp=[]; for(let i=0;i<500&&rp.length<45;i++){ const x=(R()-0.5)*170,z=(R()-0.5)*170,h=baseH(x,z); if(h>0.3&&Math.hypot(x,z-10)>20) rp.push({x,z,h,s:0.6+R()*1.5}); }
+  const rm=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),mat(0x77777a),rp.length);
+  rp.forEach((s,i)=>{ d.rotation.set(R(),R(),R()); d.scale.set(s.s,s.s*0.7,s.s); d.position.set(s.x,s.h+0.2,s.z); d.updateMatrix(); rm.setMatrixAt(i,d.matrix); world.colliders.push({x:s.x,z:s.z,r:s.s*0.85}); });
+  rm.frustumCulled=false; rm.castShadow=true; scene.add(rm);
+})();
+
+// ---- village, pier, shrine ----
+function addHouse(x,z,rot,wall,roof){
+  const g=new THREE.Group(); const h=groundY(x,z);
+  const b=new THREE.Mesh(new THREE.BoxGeometry(6,3,4.6),mat(wall)); b.position.y=1.5; b.castShadow=b.receiveShadow=true; g.add(b);
+  const r=new THREE.Mesh(new THREE.ConeGeometry(4.6,2.2,4),mat(roof)); r.position.y=4.1; r.rotation.y=Math.PI/4; r.scale.set(1.15,1,0.85); r.castShadow=true; g.add(r);
+  const dr=new THREE.Mesh(new THREE.BoxGeometry(1.1,2,0.15),mat(0x4a3220)); dr.position.set(0,1,2.34); g.add(dr);
+  const w=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.9,0.15),mat(0xcfe8ff,{emissive:0x223344})); w.position.set(2,1.8,2.34); g.add(w);
+  g.position.set(x,h,z); g.rotation.y=rot; scene.add(g);
+  world.colliders.push({x:x,z:z,r:3.1},{x:x+Math.cos(rot)*2,z:z-Math.sin(rot)*2,r:2.2},{x:x-Math.cos(rot)*2,z:z+Math.sin(rot)*2,r:2.2});
+}
+addHouse(-10,4,0.3,0xd9c7a1,0x9a4b3a);
+addHouse(10,2,-0.4,0xcdb98f,0x3d6b8f);
+addHouse(-9,19,0.8,0xe0d3b2,0x8f5a2e);
+addHouse(11,18,-0.9,0xd2c19b,0x6a4a7a);
+(function pier(){
+  const g=new THREE.Group(); const len=PIER.z1-PIER.z0;
+  const pl=new THREE.Mesh(new THREE.BoxGeometry(2.8,0.2,len),mat(0x8a6a42)); pl.position.set(PIER.x,0.35,(PIER.z0+PIER.z1)/2); pl.receiveShadow=pl.castShadow=true; g.add(pl);
+  for(let z=PIER.z0;z<=PIER.z1;z+=3){ for(const sx of [-1.3,1.3]){ const p=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.14,2.4,6),mat(0x5a4328)); p.position.set(PIER.x+sx,-0.4,z); g.add(p);} }
+  scene.add(g);
+  const boat=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.7,5),mat(0x7a4f2a)); boat.position.set(PIER.x+5,0.1,PIER.z1-3); boat.rotation.y=0.2; scene.add(boat);
+  world.decor.boat=boat;
+})();
+// standing stones around the Alpha's lair
+(function(){
+  for(let i=0;i<9;i++){ const a=i/9*TAU, x=Math.cos(a)*9, z=-52+Math.sin(a)*9; if(i===2) continue;
+    const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,3.4+ (i%3)*0.6,1.0),mat(0x6d6d72)); m.position.set(x,groundY(x,z)+1.5,z); m.rotation.y=a; m.castShadow=true; scene.add(m);
+    world.colliders.push({x,z,r:0.9}); }
+})();
+
+/* ======================== ENTITY BUILDERS ====================== */
+function makeLabel(text,color){
+  const cv=document.createElement('canvas'); cv.width=256; cv.height=64; const cx=cv.getContext('2d');
+  cx.font='bold 28px sans-serif'; cx.textAlign='center'; cx.fillStyle='rgba(0,0,0,0.55)'; cx.fillRect(0,10,256,44);
+  cx.fillStyle=color||'#ffd36b'; cx.fillText(text,128,43);
+  const tex=new THREE.CanvasTexture(cv); const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
+  s.scale.set(3,0.75,1); return s;
+}
+function makeHumanoid(look){
+  const g=new THREE.Group(); const k=look.build==='slim'?0.9:look.build==='strong'?1.14:1;
+  const skin=mat(look.skin), cloth=mat(look.outfit), pants=mat(0x2b3550), hairM=mat(look.hair), boot=mat(0x3a2a1c);
+  const torso=new THREE.Mesh(new THREE.BoxGeometry(0.62*k,0.78,0.34),cloth); torso.position.y=1.2; g.add(torso);
+  const belt=new THREE.Mesh(new THREE.BoxGeometry(0.64*k,0.1,0.36),mat(0x3a2a1c)); belt.position.y=0.84; g.add(belt);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.22,14,10),skin); head.position.y=1.76; g.add(head);
+  const eyeM=mat(0x111111); for(const sx of [-0.08,0.08]){ const e=new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6),eyeM); e.position.set(sx,1.78,0.2); g.add(e); }
+  const hg=new THREE.Group(); g.add(hg);
+  if(look.hairStyle==='spiky'){ for(let i=0;i<7;i++){ const a=i/7*TAU; const c=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.38,5),hairM); c.position.set(Math.cos(a)*0.14,1.97,Math.sin(a)*0.14); c.rotation.set(Math.sin(a)*0.5,0,-Math.cos(a)*0.5); hg.add(c);} const c0=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.42,5),hairM); c0.position.y=2.02; hg.add(c0); }
+  else if(look.hairStyle==='long'){ const cap=new THREE.Mesh(new THREE.SphereGeometry(0.245,12,8,0,TAU,0,Math.PI*0.58),hairM); cap.position.y=1.78; hg.add(cap); const back=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.75,0.14),hairM); back.position.set(0,1.45,-0.17); hg.add(back); }
+  else { const cap=new THREE.Mesh(new THREE.SphereGeometry(0.245,12,8,0,TAU,0,Math.PI*0.55),hairM); cap.position.y=1.79; hg.add(cap); }
+  function limb(x,y,len,w,m,hand){ const p=new THREE.Group(); p.position.set(x,y,0); const l=new THREE.Mesh(new THREE.CylinderGeometry(w,w*0.9,len,8),m); l.position.y=-len/2; p.add(l); if(hand){ const h=new THREE.Mesh(new THREE.SphereGeometry(w*1.1,8,6),skin); h.position.y=-len; p.add(h);} g.add(p); return p; }
+  const armL=limb(-0.4*k,1.52,0.7,0.085*k,cloth,true), armR=limb(0.4*k,1.52,0.7,0.085*k,cloth,true);
+  const legL=limb(-0.16*k,0.82,0.8,0.11*k,pants,false), legR=limb(0.16*k,0.82,0.8,0.11*k,pants,false);
+  for(const lg of [legL,legR]){ const b=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.12,0.3),boot); b.position.set(0,-0.8,0.05); lg.add(b); }
+  g.traverse(o=>{ if(o.isMesh) o.castShadow=true; });
+  g.userData={armL,armR,legL,legR,torso,head,hg,k};
+  return g;
+}
+function makeFoxbear(scale,color){
+  const g=new THREE.Group(); const m=mat(color), dark=mat(0x2a1a10), light=mat(0xd8c3a0), red=new THREE.MeshBasicMaterial({color:0xff3030});
+  const body=new THREE.Mesh(new THREE.SphereGeometry(1,14,10),m); body.scale.set(0.8,0.75,1.4); body.position.y=1.15; g.add(body);
+  const belly=new THREE.Mesh(new THREE.SphereGeometry(1,10,8),light); belly.scale.set(0.6,0.5,1.1); belly.position.set(0,0.9,0.1); g.add(belly);
+  const head=new THREE.Group(); head.position.set(0,1.45,1.35); g.add(head);
+  const hm=new THREE.Mesh(new THREE.SphereGeometry(0.55,12,10),m); head.add(hm);
+  const sn=new THREE.Mesh(new THREE.SphereGeometry(0.34,10,8),light); sn.scale.set(0.9,0.8,1.3); sn.position.set(0,-0.12,0.5); head.add(sn);
+  const nose=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,6),dark); nose.position.set(0,-0.04,0.9); head.add(nose);
+  for(const sx of [-0.3,0.3]){ const ear=new THREE.Mesh(new THREE.ConeGeometry(0.17,0.4,5),dark); ear.position.set(sx,0.5,-0.05); head.add(ear); const eye=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),red); eye.position.set(sx*0.8,0.12,0.47); head.add(eye); }
+  const legs=[]; for(const [x,z] of [[-0.5,0.8],[0.5,0.8],[-0.5,-0.8],[0.5,-0.8]]){ const p=new THREE.Group(); p.position.set(x,0.85,z); const l=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.9,0.3),dark); l.position.y=-0.42; p.add(l); g.add(p); legs.push(p); }
+  const tail=new THREE.Mesh(new THREE.SphereGeometry(0.4,8,6),light); tail.scale.set(0.8,0.8,1.6); tail.position.set(0,1.2,-1.7); g.add(tail);
+  const bound=new THREE.Mesh(new THREE.TorusGeometry(1.5,0.08,6,18),new THREE.MeshBasicMaterial({color:0x7de39b})); bound.rotation.x=Math.PI/2; bound.position.y=1.1; bound.visible=false; g.add(bound);
+  const pup=new THREE.Mesh(new THREE.TorusGeometry(1.2,0.06,6,18),new THREE.MeshBasicMaterial({color:0xffd36b})); pup.rotation.x=Math.PI/2; pup.position.y=2.4; pup.visible=false; g.add(pup);
+  g.traverse(o=>{ if(o.isMesh) o.castShadow=true; });
+  g.scale.setScalar(scale); g.userData={head,legs,tail,body,bound,pup};
+  return g;
+}
+function flashMesh(g,on){ g.traverse(o=>{ if(o.isMesh&&o.material&&o.material.emissive) o.material.emissive.setHex(on?0x883322:0x000000); }); }
+
+/* ---- NPCs / interactables ---- */
+function addNPC(id,name,x,z,look,face){
+  const m=makeHumanoid(look); const y=groundY(x,z); m.position.set(x,y,z); m.rotation.y=face||0; scene.add(m);
+  const lb=makeLabel(name); lb.position.set(0,2.5,0); m.add(lb);
+  const n={id,name,mesh:m,x,z,face:face||0}; world.npcs.push(n);
+  world.colliders.push({x,z,r:0.5});
+  world.interact.push({x,z,r:3.2,label:'Talk to '+name,fn:()=>openDialog(id)});
+  return n;
+}
+const mitoNPC = addNPC('mito','Mito',-6,8,{skin:'#e8b88f',hair:'#5a3a22',hairStyle:'long',outfit:'#c05a6a',build:'slim'},0.5);
+const gp0 = findLand(PIER.x+4,PIER.zs-3,0.9,6);
+const goroNPC = addNPC('goro','Goro (old sailor)',gp0.x,gp0.z,{skin:'#c9966c',hair:'#d8d8d8',hairStyle:'short',outfit:'#3b5f8a',build:'strong'},-1.2);
+
+function addCampfire(id,x,z,label){
+  const y=groundY(x,z); const g=new THREE.Group(); g.position.set(x,y,z);
+  for(let i=0;i<5;i++){ const lg=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,1.1,5),mat(0x5a3a1e)); lg.position.set(Math.cos(i*1.26)*0.4,0.15,Math.sin(i*1.26)*0.4); lg.rotation.set(Math.PI/2.4,i*1.26,0); g.add(lg); }
+  const fl=new THREE.Mesh(new THREE.ConeGeometry(0.35,1,6),new THREE.MeshBasicMaterial({color:0xff9a30})); fl.position.y=0.7; g.add(fl);
+  scene.add(g); world.colliders.push({x,z,r:0.6});
+  world.interact.push({x,z,r:3.2,label:label,fn:()=>rest(x,z)});
+  return {g,fl};
+}
+const fire1 = addCampfire('f1',4,8,'Rest at the campfire (checkpoint)');
+const fl2p = findLand(0,-36,1.5,8);
+const fire2 = addCampfire('f2',fl2p.x,fl2p.z,'Rest at the highland campfire (checkpoint)');
+const fireLight = new THREE.PointLight(0xff9a40,0.8,18); fireLight.position.set(4,3.2,8); scene.add(fireLight);
+
+// herbs
+(function(){
+  const R=rng(31); let n=0;
+  for(let i=0;i<500&&n<9;i++){ const x=(R()-0.5)*130,z=(R()-0.5)*130,h=baseH(x,z); if(h<1.5||h>8||Math.hypot(x,z-10)<24||blocked(x,z,0.6)) continue;
+    const id='herb'+n; n++;
+    const g=new THREE.Group(); for(let k=0;k<4;k++){ const l=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.6,4),new THREE.MeshBasicMaterial({color:0x7dffa0})); l.position.set(Math.cos(k*1.6)*0.18,0.3,Math.sin(k*1.6)*0.18); g.add(l); }
+    g.position.set(x,h,z); scene.add(g);
+    const it={id,x,z,r:2.2,label:'Gather healing herb',mesh:g,fn:()=>{ if(S.taken.includes(id))return; S.taken.push(id); S.inv.herb=(S.inv.herb||0)+1; S.stats.pickups++; g.visible=false; it.dead=true; toast('+1 Healing Herb'); Aud.ui(); }};
+    world.interact.push(it); world.herbs.push(it);
+  }
+})();
+
+/* ============================ ENEMIES ========================== */
+function spawnEnemy(id,type,x,z){
+  const T=ETYPES[type]; const mesh=makeFoxbear(T.scale,T.col); const y=groundY(x,z); mesh.position.set(x,y,z); scene.add(mesh);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(0.85,1,36),new THREE.MeshBasicMaterial({color:0xff2a2a,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false}));
+  ring.rotation.x=-Math.PI/2; ring.visible=false; scene.add(ring);
+  const line=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({color:0xff2a2a,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false}));
+  line.rotation.x=-Math.PI/2; line.visible=false; scene.add(line);
+  const e={id,type,T,mesh,ring,line,pos:new THREE.Vector3(x,y,z),home:{x,z},face:Math.random()*TAU,hp:T.hp,maxhp:T.hp,
+    lvl:T.lvl,dmg:T.dmg,guard:T.guard,radius:T.rad,state:'idle',t:0,aggro:false,dead:false,stun:0,bound:0,puppet:0,pcd:0,flash:0,
+    atk:null,cd:1+Math.random(),wander:{x,z,t:0},kx:0,kz:0,fragile:false,vulnerable:0,phase2:false,speedMul:1,respawnAt:0,deathT:0,pullT:0,pullDir:null,strikeDone:false};
+  world.enemies.push(e); return e;
+}
+function buildEnemies(){
+  for(const e of world.enemies){ scene.remove(e.mesh); scene.remove(e.ring); scene.remove(e.line); }
+  world.enemies.length=0;
+  const spots=[[26,-18],[-28,-24],[14,-36],[-18,-44],[34,-4]];
+  spots.forEach((p,i)=>{ const l=findLand(p[0],p[1],1.5,9); spawnEnemy('fb'+i,'foxbear',l.x,l.z); });
+  const al=spawnEnemy('alpha','alpha',0,-52);
+  if(S.flags.alphaDead){ al.dead=true; al.hp=0; al.mesh.visible=false; al.respawnAt=Infinity; }
+}
+
+/* ============================== PLAYER ========================= */
+const P = {
+  pos:new THREE.Vector3(0,3,12),vy:0,face:0,ground:true,mesh:null,auraM:null,rings:null,
+  atk:null,comboIdx:0,comboT:0,block:false,blockT:0,dodge:null,
+  ten:false,ren:false,zetsu:false,tenSealed:0,koT:0,invuln:0,stun:0,stDelay:0,
+  cd:[0,0,0,0],cdMax:[1,1,1,1],lock:null,dead:false,hurtT:0,stepD:0,noise:0,
+  dash:null,anim:0,cy:0,cp:0.35,cDist:6.5,shakeV:0,speed:0,lastAmbush:0
+};
+function rebuildPlayerMesh(){
+  if(P.mesh) scene.remove(P.mesh);
+  P.mesh=makeHumanoid(S.look); scene.add(P.mesh);
+  const am=new THREE.Mesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshBasicMaterial({color:0xaee6ff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
+  am.scale.set(0.8,1.25,0.8); am.position.y=1.1; P.mesh.add(am); P.auraM=am;
+  const rg=new THREE.Mesh(new THREE.TorusGeometry(0.9,0.04,6,24),new THREE.MeshBasicMaterial({color:0xffcf6a,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
+  rg.rotation.x=Math.PI/2; P.mesh.add(rg); P.rings=rg;
+}
+function placePlayer(x,z){ P.pos.set(x,groundY(x,z),z); P.vy=0; P.ground=true; }
+
+/* -------- input -------- */
+const K={}; const Mb={l:false,r:false};
+function onKeyDown(e){
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')) return;
+  K[e.code]=true;
+  if(['Tab','Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)) e.preventDefault();
+  if(e.repeat) return;
+  onKeyPress(e.code);
+}
+window.addEventListener('keydown',onKeyDown);
+window.addEventListener('keyup',e=>{ K[e.code]=false; });
+window.addEventListener('blur',()=>{ for(const k in K) K[k]=false; Mb.l=Mb.r=false; });
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('mousedown',e=>{
+  if(G.mode!=='play') return; Aud.init();
+  if(document.pointerLockElement!==canvas && canvas.requestPointerLock){ try{ canvas.requestPointerLock(); }catch(_){} }
+  if(e.button===0){ Mb.l=true; tryAttack('light'); }
+  if(e.button===2){ Mb.r=true; }
+});
+window.addEventListener('mouseup',e=>{ if(e.button===0)Mb.l=false; if(e.button===2)Mb.r=false; });
+window.addEventListener('mousemove',e=>{
+  if(G.mode!=='play'||document.pointerLockElement!==canvas) return;
+  P.cy-=e.movementX*0.0026*G.graphics.sens; P.cp=clamp(P.cp+e.movementY*0.0022*G.graphics.sens,-0.2,1.25);
+});
+window.addEventListener('resize',()=>{ renderer.setSize(innerWidth,innerHeight); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); });
+
+function onKeyPress(code){
+  if(G.mode==='drill'){ if(code==='Space') drillPress(); return; }
+  if(G.mode==='dialog'){ if(code==='Escape') closeDialog(); const n=parseInt(code.replace('Digit',''),10); if(n>=1&&n<=9) pickChoice(n-1); return; }
+  if(G.mode==='menu'){
+    const tabMap={KeyI:'inventory',KeyN:'nen',KeyJ:'journal',KeyC:'character',KeyM:'map',KeyK:'relations',KeyH:'hunter'};
+    if(code==='Escape'){ closePanel(); return; }
+    if(tabMap[code]){ if(G.panelTab===tabMap[code]) closePanel(); else openPanel(tabMap[code]); }
+    return;
+  }
+  if(G.mode!=='play') return;
+  switch(code){
+    case 'KeyE': interact(); break;
+    case 'Tab': toggleLock(); break;
+    case 'Space': if(P.ground&&!P.dodge&&!P.atk&&!P.dead&&S.st>=8){ P.vy=7.2; P.ground=false; S.st-=8; P.stDelay=0.5; } break;
+    case 'KeyV': tryAttack('light'); break;
+    case 'KeyF': tryAttack('heavy'); break;
+    case 'KeyQ': tryDodge(); break;
+    case 'KeyT': toggleTen(); break;
+    case 'Digit1': case 'Digit2': case 'Digit3': case 'Digit4': castAbility(parseInt(code.slice(5),10)-1); break;
+    case 'KeyI': openPanel('inventory'); break;
+    case 'KeyN': openPanel('nen'); break;
+    case 'KeyJ': openPanel('journal'); break;
+    case 'KeyC': openPanel('character'); break;
+    case 'KeyM': openPanel('map'); break;
+    case 'KeyK': openPanel('relations'); break;
+    case 'KeyH': openPanel('hunter'); break;
+    case 'Escape': openPanel('system'); break;
+  }
+}
+function toggleLock(){
+  if(P.lock){ P.lock=null; return; }
+  P.lock=nearestEnemy(26,true);
+  if(!P.lock) toast('No target nearby');
+}
+function nearestEnemy(range,aliveOnly){
+  let best=null,bd=range;
+  for(const e of world.enemies){ if(e.dead) continue; const d=Math.hypot(e.pos.x-P.pos.x,e.pos.z-P.pos.z)-e.radius; if(d<bd){bd=d;best=e;} }
+  return best;
+}
+function interact(){
+  let best=null,bd=1e9;
+  for(const it of world.interact){ if(it.dead) continue; const d=Math.hypot(it.x-P.pos.x,it.z-P.pos.z); if(d<it.r&&d<bd){bd=d;best=it;} }
+  if(best) best.fn();
+}
+function nearestInteract(){
+  let best=null,bd=1e9;
+  for(const it of world.interact){ if(it.dead) continue; const d=Math.hypot(it.x-P.pos.x,it.z-P.pos.z); if(d<it.r&&d<bd){bd=d;best=it;} }
+  return best;
+}
+
+/* ============================== COMBAT ========================= */
+function renMult(){ return 1.3+0.7*S.nen.ren/100; }
+function tenReduce(){ return 0.15+0.35*S.nen.ten/100; }
+function detectRadius(base){
+  let r=base;
+  if(P.zetsu) r*=(1-(0.55+0.4*S.nen.zetsu/100));
+  if(P.ren) r*=1.5;
+  if(P.noise>0) r=Math.max(r,base*0.45);
+  if(K.ShiftLeft&&P.speed>1) r*=1.2;
+  return r;
+}
+function playerDamage(a){
+  let d=(10+S.level*2.2)*(S.look.build==='strong'?1.12:1)*(S.look.style==='brawler'?1.15:1);
+  d*= a.kind==='heavy'?2.1:[1,1.1,1.5][a.idx||0];
+  let nen=false;
+  if(P.ren){ d*=renMult()*(1+0.25*aff('Enhancement')/100); nen=true; }
+  return {d,nen};
+}
+function tryAttack(kind){
+  if(G.mode!=='play'||P.dead||P.atk||P.dodge||P.stun>0||P.dash) return;
+  const cost=kind==='heavy'?22:9; if(S.st<cost) return;
+  S.st-=cost; P.stDelay=0.7;
+  if(kind==='light'){ P.comboIdx=P.comboT>0?(P.comboIdx+1)%3:0; P.comboT=0.9; } else P.comboIdx=0;
+  const dur=kind==='heavy'?0.75:[0.42,0.4,0.55][P.comboIdx];
+  P.atk={kind,t:0,dur,hit:dur*0.45,done:false,idx:P.comboIdx};
+  const t=P.lock||nearestEnemy(4.5);
+  if(t) P.face=Math.atan2(t.pos.x-P.pos.x,t.pos.z-P.pos.z); else { const f=camForward(); P.face=Math.atan2(f.x,f.z); }
+  S.stats.attacks++; if(kind==='heavy') S.stats.heavy++;
+  Aud.swing(); P.noise=1.5;
+}
+function resolvePlayerHit(a){
+  const range=a.kind==='heavy'?3.3:2.8; let any=false;
+  for(const e of world.enemies){
+    if(e.dead) continue; const dx=e.pos.x-P.pos.x,dz=e.pos.z-P.pos.z; const d=Math.hypot(dx,dz)-e.radius; if(d>range) continue;
+    if(Math.abs(angDiff(P.face,Math.atan2(dx,dz)))>1.15) continue;
+    const dm=playerDamage(a);
+    hurtEnemy(e,dm.d,{nen:dm.nen,stagger:a.kind==='heavy'?0.7:(a.idx===2?0.5:0.15),knock:a.kind==='heavy'?3.2:1.2,ambush:true});
+    any=true;
+  }
+  if(any){ G.hitstop=0.05; Aud.hit(); G.shake=0.18; }
+}
+function tryDodge(){
+  if(G.mode!=='play'||P.dead||P.dodge||P.stun>0||P.dash) return;
+  const cost=S.look.style==='evasive'?10:16; if(S.st<cost) return;
+  S.st-=cost; P.stDelay=0.6;
+  const m=moveInput(); let dx=m.x,dz=m.z; if(Math.hypot(dx,dz)<0.1){ const f=fwd(P.face); dx=-f.x; dz=-f.z; }
+  const l=Math.hypot(dx,dz); dx/=l; dz/=l;
+  P.dodge={t:0,dur:0.4,dx,dz}; P.invuln=S.look.style==='evasive'?0.32:0.25; P.atk=null; S.stats.dodges++;
+  A.dodges+=1; Aud.tone(200,0.15,'sine',0.06,200);
+}
+function hurtEnemy(e,dmg,o){
+  o=o||{}; if(e.dead) return;
+  let d=dmg; const plain=!o.nen;
+  if(plain) d*=e.guard;
+  let ambush=false;
+  if(o.ambush&&!e.aggro&&e.state==='idle'){ d*=2; ambush=true; }
+  if(e.vulnerable>0) d*=1.5;
+  d=Math.max(1,Math.round(d));
+  e.hp-=d; e.flash=0.12; G.lastHit=e;
+  showDmg(e.pos,d,{nen:o.nen,ambush,guarded:plain&&e.guard<1});
+  if(e.state==='idle'||e.puppet>0===false&&!e.aggro){ e.aggro=true; if(e.state==='idle') e.state='chase'; }
+  e.aggro=true;
+  const stg=(o.stagger||0)*e.T.stagRes;
+  if(stg>0.18&&e.state!=='charging'){ e.stun=Math.max(e.stun,stg); e.state='stagger'; e.atk=null; e.ring.visible=false; e.line.visible=false; }
+  if(o.knock){ const dx=e.pos.x-P.pos.x,dz=e.pos.z-P.pos.z,l=Math.hypot(dx,dz)||1; const kk=o.knock*(e.T.boss?0.3:1); e.kx=dx/l*kk*4; e.kz=dz/l*kk*4; }
+  if(e.hp<=0) killEnemy(e);
+}
+function killEnemy(e){
+  e.dead=true; e.hp=0; e.state='dead'; e.deathT=0; e.ring.visible=false; e.line.visible=false; e.mesh.userData.bound.visible=false; e.mesh.userData.pup.visible=false;
+  S.stats.kills++; if(P.lock===e) P.lock=null;
+  const lvlDiff=S.level-e.lvl; const xp=Math.round(e.T.xp*clamp(1-lvlDiff*0.25,0.1,1)); gainXP(xp);
+  const jen=rint(8,20)*(e.T.boss?10:1); S.jenny+=jen;
+  if(e.type==='foxbear'){ if(Math.random()<0.7){ S.inv.pelt=(S.inv.pelt||0)+1; toast('Dropped: Foxbear Pelt'); } e.respawnAt=S.clock+6; }
+  else { S.flags.alphaDead=true; S.inv.tonic=(S.inv.tonic||0)+2; toast('The Alpha falls. Dropped: 2 Aura Tonics'); e.respawnAt=Infinity; }
+  toast('+'+xp+' XP, +'+jen+' Jenny');
+  const q=S.quests.main;
+  if(e.type==='foxbear'&&q.step===2){ q.kills++; if(q.kills>=3){ q.step=3; toast('Quest updated: return to Goro for the water divination.'); } else toast('Foxbears defeated: '+q.kills+'/3'); }
+  if(e.type==='alpha'&&q.step===4){ q.step=5; toast('Quest updated: return to Mito.'); }
+  Aud.hit(); G.abilDirty=true;
+}
+function gainXP(n){
+  S.xp+=n;
+  while(S.xp>=xpNeed()&&S.level<30){ S.xp-=xpNeed(); S.level++; S.hp=maxHP(); S.st=maxST(); if(S.nen.unlocked) S.aura=maxAura(); toast('LEVEL UP! You are level '+S.level); Aud.tone(520,0.4,'triangle',0.12,520); }
+}
+// Adaptive tracking for the Alpha: counts decay over time
+const A={blocks:0,dodges:0};
+function hurtPlayer(dmg,e,atk,dirX,dirZ){
+  if(P.dead||S.flags.sliceDone&&false) return false;
+  if(P.invuln>0) return false;
+  const f=fwd(P.face);
+  // block / parry
+  if(P.block&&atk.block){
+    const ang=Math.abs(angDiff(P.face,Math.atan2(e.pos.x-P.pos.x,e.pos.z-P.pos.z)));
+    if(ang<1.0){
+      if(P.blockT<0.22){ // parry
+        e.stun=Math.max(e.stun,e.T.boss?0.7:1.4); e.state='stagger'; e.atk=null; e.ring.visible=false; e.line.visible=false;
+        toast('PARRY!'); Aud.tone(900,0.15,'square',0.12); G.hitstop=0.08; S.stats.blocks++; A.blocks++; return false;
+      }
+      const cost=dmg*(S.look.style==='guardian'?0.6:1.0);
+      if(S.st>=cost*0.6){ S.st-=cost*0.6; S.stats.blocks++; A.blocks++; dmg*=(S.look.style==='guardian'?0.15:0.25); Aud.tone(300,0.1,'square',0.1); P.stDelay=1; }
+      else { dmg*=0.8; P.block=false; P.stun=0.5; }
+    }
+  }
+  let m=1;
+  if(P.zetsu) m*=1.5;
+  if(P.koT>0) m*=1.6;
+  else if(P.ten&&!P.zetsu) m*=(1-tenReduce());
+  if(P.ren) m*=0.85;
+  dmg=Math.max(1,Math.round(dmg*m));
+  S.hp-=dmg; P.hurtT=0.25; Aud.hurt(); G.shake=0.3;
+  showDmg(P.pos,dmg,{player:true});
+  if(P.zetsu){ P.zetsu=false; }
+  // fragile conjured chains break when the caster is hurt
+  for(const en of world.enemies){ if(en.fragile&&en.bound>0){ en.bound=0; en.fragile=false; toast('Your chains shattered!'); } }
+  if(atk.kind==='melee'||atk.kind==='lunge'||atk.kind==='charge'){ const l=Math.hypot(dirX,dirZ)||1; P.kx=dirX/l*5; P.kz=dirZ/l*5; }
+  if(S.hp<=0) playerDie();
+  return true;
+}
+function playerDie(){
+  P.dead=true; S.stats.deaths++; S.hp=0; P.ten=P.ren=P.zetsu=false; P.atk=null;
+  setMode('dead');
+  showOv('<h2>Defeated</h2><p>You collapse in the undergrowth. Nen is not about power alone: read telegraphs, use the terrain, and know when to withdraw.</p><p class="sub">Respawning at your last checkpoint costs 20% of your Jenny.</p><button class="pri" data-act="respawn">Wake at checkpoint</button>');
+}
+function respawn(){
+  S.jenny=Math.floor(S.jenny*0.8); S.hp=maxHP(); S.st=maxST(); S.aura=Math.min(maxAura(),S.aura+Math.round(maxAura()*0.5));
+  placePlayer(S.respawnAt.x,S.respawnAt.z); P.dead=false; P.lock=null; P.stun=0; P.invuln=1.5; P.kx=P.kz=0;
+  for(const e of world.enemies){ if(!e.dead){ e.aggro=false; e.state='idle'; e.atk=null; e.ring.visible=false; e.line.visible=false; e.hp=Math.max(e.hp,e.maxhp*0.7); } }
+  hideOv(); setMode('play'); toast('You wake at the campfire.');
+}
+function rest(x,z){
+  S.hp=maxHP(); S.st=maxST(); S.aura=maxAura(); S.respawnAt={x:x+1.5,z:z+1.5};
+  S.clock+=1; // an hour passes
+  toast('Rested. Checkpoint set. Game saved.'); doSave(true);
+  const now=S.clock;
+  for(const e of world.enemies){ if(e.dead&&e.respawnAt<=now&&e.type!=='alpha') reviveEnemy(e); }
+}
+function reviveEnemy(e){
+  e.dead=false; e.hp=e.maxhp; e.state='idle'; e.aggro=false; e.mesh.visible=true; e.mesh.rotation.z=0; e.mesh.position.set(e.home.x,groundY(e.home.x,e.home.z),e.home.z); e.pos.set(e.home.x,e.mesh.position.y,e.home.z); e.bound=0; e.stun=0; e.puppet=0;
+}
+
+/* floating damage numbers (pooled DOM) */
+const dmgPool=[]; for(let i=0;i<24;i++){ const d=document.createElement('div'); d.className='dmg'; $('#dmgs').appendChild(d); dmgPool.push({el:d,t:0,pos:new THREE.Vector3()}); }
+function showDmg(pos,val,o){
+  const s=dmgPool.find(x=>x.t<=0)||dmgPool[0]; s.t=0.9; s.pos.set(pos.x,pos.y+2.2,pos.z);
+  s.el.textContent=(o.ambush?'AMBUSH ':'')+val+(o.guarded?' (hide)':''); s.el.style.color=o.player?'#ff6b6b':o.nen?'#7fe0ff':o.guarded?'#aaaaaa':'#ffffff'; s.el.style.display='block';
+}
+function updateDmgNums(dt){
+  const v=new THREE.Vector3();
+  for(const s of dmgPool){ if(s.t<=0){ s.el.style.display='none'; continue; } s.t-=dt; s.pos.y+=dt*1.2; v.copy(s.pos).project(camera);
+    if(v.z>1){ s.el.style.display='none'; continue; }
+    s.el.style.left=((v.x*0.5+0.5)*innerWidth)+'px'; s.el.style.top=((-v.y*0.5+0.5)*innerHeight)+'px'; s.el.style.opacity=clamp(s.t*2,0,1); }
+}
+
+/* ============================== NEN ============================ */
+function toggleTen(){
+  if(!S.nen.unlocked){ toast('You have not learned Ten yet. Talk to Goro.'); return; }
+  if(P.tenSealed>0||P.koT>0){ toast('Ten is disrupted.'); return; }
+  P.ten=!P.ten; if(P.ten){ P.zetsu=false; Aud.aura(); } toast(P.ten?'Ten: aura held around the body':'Ten released');
+}
+function getSlot(i){
+  if(i===0) return S.nen.cat&&S.nen.divined?Object.assign({id:'sig',cat:S.nen.cat},SIG[S.nen.cat]):null;
+  if(i===1) return S.nen.unlocked?Object.assign({id:'ko',cat:'Enhancement'},KO):null;
+  return S.customs[i-2]||null;
+}
+function pickTarget(range){
+  if(P.lock&&!P.lock.dead&&Math.hypot(P.lock.pos.x-P.pos.x,P.lock.pos.z-P.pos.z)-P.lock.radius<=range+1) return P.lock;
+  let best=null,bd=range;
+  for(const e of world.enemies){ if(e.dead) continue; const dx=e.pos.x-P.pos.x,dz=e.pos.z-P.pos.z,d=Math.hypot(dx,dz)-e.radius; if(d>bd) continue;
+    if(Math.abs(angDiff(P.face,Math.atan2(dx,dz)))>1.0&&d>2) continue; bd=d; best=e; }
+  return best;
+}
+function abilityDamage(ab){ return ab.power*(4.5+S.level*0.6)*(0.7+0.3*aff(ab.cat)/100)*(P.ren?1.15:1); }
+function castAbility(i){
+  if(G.mode!=='play'||P.dead) return;
+  const ab=getSlot(i);
+  if(!ab){ toast(i===0?'Signature technique unlocks after the water divination.':'Slot empty. Design a technique in the Nen menu (N).'); return; }
+  if(!S.nen.unlocked){ toast('You have not learned Ten yet.'); return; }
+  if(P.cd[i]>0){ return; }
+  if(P.stun>0||P.dodge) return;
+  if(S.aura<ab.cost){ toast('Not enough aura.'); return; }
+  const vows=ab.vows||[];
+  const near=nearestEnemy(4);
+  if(vows.includes('ren')&&!P.ren){ toast('Vow: this technique only works while Ren is active.'); return; }
+  if(vows.includes('melee')&&!near){ toast('Vow: needs an enemy within 4 m.'); return; }
+  if(vows.includes('night')&&!(hoursToday()>=18||hoursToday()<6)){ toast('Vow: only usable at night.'); return; }
+  if(vows.includes('life')&&S.hp<=maxHP()*0.15+1){ toast('Vow: not enough life to pay the cost.'); return; }
+  const tgt=pickTarget(ab.eff==='bolt'?ab.range:Math.min(ab.range,28));
+  const needsT=['bind','mark','drain','pull'].includes(ab.eff);
+  if(needsT&&!tgt){ toast('No target in range.'); return; }
+  if(ab.eff==='strike'||ab.eff==='bolt'){ const t2=tgt||P.lock; if(t2) P.face=Math.atan2(t2.pos.x-P.pos.x,t2.pos.z-P.pos.z); }
+  if(needsT&&tgt) P.face=Math.atan2(tgt.pos.x-P.pos.x,tgt.pos.z-P.pos.z);
+  S.aura-=ab.cost; P.cd[i]=ab.cd; P.cdMax[i]=ab.cd; S.stats.hatsu++; P.zetsu=false; P.noise=2; Aud.cast();
+  S.nen.hatsu=Math.min(100,S.nen.hatsu+0.6/(1+S.nen.hatsu/20));
+  if(vows.includes('life')) { S.hp-=maxHP()*0.15; showDmg(P.pos,Math.round(maxHP()*0.15),{player:true}); }
+  if(vows.includes('exhaust')){ P.tenSealed=6; P.ten=false; }
+  const dmg=abilityDamage(ab); const fx=fwd(P.face);
+  switch(ab.eff){
+    case 'strike': {
+      let any=false; for(const e of world.enemies){ if(e.dead) continue; const dx=e.pos.x-P.pos.x,dz=e.pos.z-P.pos.z; const d=Math.hypot(dx,dz)-e.radius; if(d>ab.range+0.5) continue; if(Math.abs(angDiff(P.face,Math.atan2(dx,dz)))>1.3) continue; hurtEnemy(e,dmg,{nen:true,stagger:0.8,knock:3.5,ambush:true}); any=true; }
+      if(any){ G.hitstop=0.08; G.shake=0.3; Aud.hit(); }
+      P.atk={kind:'heavy',t:0,dur:0.5,hit:99,done:true,idx:0};
+      if(ab.ko){ P.koT=4; P.ten=false; toast('Ko: the rest of your body is defenseless!'); }
+      break; }
+    case 'bolt': fireBolt(P.pos.x+fx.x*0.8,P.pos.y+1.4,P.pos.z+fx.z*0.8,fx.x,fx.z,ab.range,dmg); S.stats.ranged=(S.stats.ranged||0)+1; break;
+    case 'bind': if(tgt){ const res=tgt.T.boss?0.4:1; tgt.bound=(1.5+ab.power*0.5)*res; tgt.fragile=!!ab.fragile; tgt.atk=null; tgt.ring.visible=false; tgt.line.visible=false; hurtEnemy(tgt,dmg*0.25,{nen:true}); toast(tgt.T.boss?'The Alpha strains against the chains!':'Target bound!'); } break;
+    case 'heal': heal(ab.power*7+S.level*2); showDmg(P.pos,Math.round(ab.power*7+S.level*2),{}); break;
+    case 'dash': P.dash={t:0,dur:0.28,dx:fx.x,dz:fx.z,speed:ab.range/0.28,hit:new Set(),dmg}; P.invuln=Math.max(P.invuln,0.2); break;
+    case 'mark': if(tgt){ const res=tgt.T.boss?0.4:1; tgt.puppet=(2.5+ab.power*0.7)*res; tgt.atk=null; tgt.state='puppet'; tgt.ring.visible=false; tgt.line.visible=false; toast('Puppet Thread: '+tgt.T.name+' is under your control.'); } break;
+    case 'drain': if(tgt){ hurtEnemy(tgt,dmg,{nen:true,stagger:0.3}); heal(dmg*0.6); } break;
+    case 'pull': if(tgt){ tgt.pullT=0.3; tgt.bound=0.9*(tgt.T.boss?0.3:1); tgt.state='stagger'; tgt.stun=0.5; tgt.atk=null; hurtEnemy(tgt,dmg*0.5,{nen:true}); } break;
+  }
+  G.abilDirty=true;
+}
+const bolts=[]; (function(){ for(let i=0;i<10;i++){ const m=new THREE.Mesh(new THREE.SphereGeometry(0.35,10,8),new THREE.MeshBasicMaterial({color:0x6fd3ff,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending})); m.visible=false; scene.add(m); bolts.push({m,life:0,dx:0,dz:0,dmg:0}); } })();
+function fireBolt(x,y,z,dx,dz,range,dmg){ const b=bolts.find(q=>q.life<=0); if(!b) return; b.life=range/24; b.dx=dx; b.dz=dz; b.dmg=dmg; b.m.position.set(x,y,z); b.m.visible=true; }
+function updateBolts(dt){
+  for(const b of bolts){ if(b.life<=0) continue; b.life-=dt; b.m.position.x+=b.dx*24*dt; b.m.position.z+=b.dz*24*dt; b.m.position.y=Math.max(b.m.position.y,groundY(b.m.position.x,b.m.position.z)+0.6);
+    let boom=b.life<=0; if(blocked(b.m.position.x,b.m.position.z,0.1)&&groundY(b.m.position.x,b.m.position.z)>-0.5) boom=true;
+    for(const e of world.enemies){ if(e.dead) continue; if(Math.hypot(e.pos.x-b.m.position.x,e.pos.z-b.m.position.z)<e.radius+0.5){ boom=true; break; } }
+    if(boom){ b.life=0; b.m.visible=false; let any=false; for(const e of world.enemies){ if(e.dead) continue; if(Math.hypot(e.pos.x-b.m.position.x,e.pos.z-b.m.position.z)<e.radius+2.2){ hurtEnemy(e,b.dmg,{nen:true,stagger:0.35,knock:1.5,ambush:true}); any=true; } } if(any){ Aud.hit(); G.shake=0.15; } } }
+}
+function validateAbility(f){
+  const msgs=[]; let ok=true; const E=EFFECTS[f.eff];
+  const name=(f.name||'').trim();
+  if(name.length<2||name.length>24){ ok=false; msgs.push('Name must be 2-24 characters.'); }
+  if(!E){ ok=false; msgs.push('Choose an effect.'); return {ok,msgs,points:0,budget:0,cost:0}; }
+  if(!CATS.includes(f.cat)){ ok=false; msgs.push('Choose a category.'); }
+  if(f.vows.length>2){ ok=false; msgs.push('At most 2 vows.'); }
+  if(f.eff==='heal'&&f.vows.includes('life')){ ok=false; msgs.push('Healing that costs life makes no sense.'); }
+  if(f.eff==='dash'&&f.vows.includes('melee')){ ok=false; msgs.push('A dash cannot require being within 4 m of an enemy.'); }
+  const fit=E.fit.includes(f.cat);
+  let pts=f.power*1.0+f.range*0.15+Math.max(0,12-f.cd)*0.25+E.base; if(!fit) pts*=1.5;
+  let vp=0; f.vows.forEach(v=>{ if(VOWS[v]) vp+=VOWS[v].pts; });
+  const budget=8+({100:6,80:4.5,60:3,40:1.5}[aff(f.cat)]||0)+Math.min(S.level,20)*0.4+S.nen.hatsu*0.05+vp;
+  if(!fit) msgs.push('"'+f.cat+'" is an unnatural fit for this effect: cost x1.5.');
+  if(pts>budget){ ok=false; msgs.push('Over budget by '+(pts-budget).toFixed(1)+'. Lower power/range, lengthen the cooldown, or add a vow.'); }
+  if(f.power>=9&&vp<3){ ok=false; msgs.push('Power 9+ demands a heavy vow (3+ vow points).'); }
+  const cost=Math.round(pts*1.6+6);
+  return {ok,msgs,points:pts,budget,cost,vp,fit};
+}
+function updateNenState(dt){
+  const ma=maxAura();
+  if(P.tenSealed>0) P.tenSealed-=dt;
+  if(P.koT>0){ P.koT-=dt; P.ten=false; }
+  if(!S.nen.unlocked){ P.ten=P.ren=P.zetsu=false; return; }
+  const wantRen=(K.KeyR||false)&&!P.dead; const wantZ=(K.KeyZ||false)&&!P.dead;
+  if(wantRen&&S.nen.ren>=0&&S.nen.unlocked&&P.tenSealed<=0&&P.koT<=0){ if(!P.ren&&S.aura>8){ P.ren=true; Aud.aura(); } }
+  else if(!wantRen) P.ren=false;
+  if(wantZ&&!P.ren&&S.nen.zetsu>0){ if(!P.zetsu){ P.zetsu=true; P.ten=false; Aud.zetsu(); } }
+  else if(!wantZ) P.zetsu=false;
+  if(wantZ&&S.nen.zetsu<=0&&!P._zw){ toast('You have not trained Zetsu yet (see Goro).'); P._zw=true; }
+  if(!wantZ) P._zw=false;
+  if(wantRen&&P.ren===false&&S.aura<=8&&!P._rw){ toast('Not enough aura for Ren.'); P._rw=true; } if(!wantRen) P._rw=false;
+  if(P.ren){ S.aura-=7*(1-0.5*S.nen.ren/100)*dt; if(S.aura<=0){ S.aura=0; P.ren=false; toast('Aura exhausted.'); } P.ten=false; }
+  else if(P.zetsu){ S.aura=Math.min(ma,S.aura+(5+0.08*S.nen.zetsu)*dt); S.stats.zetsu+=dt; }
+  else if(P.ten){ S.aura=Math.min(ma,S.aura+(1.0+0.02*S.nen.ten)*dt); }
+  else S.aura=Math.min(ma,S.aura+0.8*dt);
+}
+
+/* ============================ ENEMY AI ========================= */
+function chooseAtk(e){
+  const dp=Math.hypot(P.pos.x-e.pos.x,P.pos.z-e.pos.z)-e.radius;
+  if(e.type==='foxbear'){ return dp>4&&Math.random()<0.5?'lunge':'bite'; }
+  // Alpha: adapts to the player's habits
+  if(!e.phase2&&e.hp<e.maxhp*0.5){ e.phase2=true; e.speedMul=1.25; toast('The Alpha roars. It is enraged!'); Aud.roar(); G.shake=0.5; }
+  if(e.phase2&&dp>7&&Math.random()<0.55) return 'charge';
+  if(A.blocks>A.dodges+1&&Math.random()<0.7) return 'grab';      // you block a lot -> unblockable grab
+  if(A.dodges>A.blocks+1&&Math.random()<0.7) return 'sweep';     // you dodge a lot -> wide sweep
+  if(dp>5) return 'lunge';
+  return Math.random()<0.6?'bite':'sweep';
+}
+function startAttack(e,name){
+  const a=ATK[name]; e.atk={name,a,t:0}; e.state='windup'; e.t=0; e.strikeDone=false;
+  if(a.tg==='ring'){ e.ring.visible=true; e.line.visible=false; } else { e.line.visible=true; e.ring.visible=false; }
+  if(e.type==='alpha') Aud.tone(110,0.4,'sawtooth',0.1,-30);
+}
+function enemyFacePlayer(e,dt,rate){ const want=Math.atan2(P.pos.x-e.pos.x,P.pos.z-e.pos.z); e.face+=clamp(angDiff(e.face,want),-rate*dt,rate*dt); }
+function updateEnemy(e,dt){
+  if(e.dead){
+    if(e.deathT<1){ e.deathT+=dt*1.5; e.mesh.rotation.z=lerp(0,Math.PI/2,Math.min(1,e.deathT)); e.mesh.position.y=e.pos.y-0.6*Math.min(1,e.deathT); }
+    else if(e.type!=='alpha'&&e.respawnAt<=S.clock){ reviveEnemy(e); }
+    return;
+  }
+  if(e.flash>0){ e.flash-=dt; if(e.flash<=0) flashMesh(e.mesh,false); else flashMesh(e.mesh,true); }
+  if(e.vulnerable>0) e.vulnerable-=dt;
+  const ud=e.mesh.userData;
+  // knockback
+  if(Math.abs(e.kx)+Math.abs(e.kz)>0.05){ slideMove(e.pos,e.kx*dt,e.kz*dt,e.radius*0.6); e.kx*=Math.pow(0.02,dt); e.kz*=Math.pow(0.02,dt); }
+  if(e.pullT>0){ e.pullT-=dt; const dx=P.pos.x-e.pos.x,dz=P.pos.z-e.pos.z,l=Math.hypot(dx,dz); if(l>2.2) slideMove(e.pos,dx/l*28*dt,dz/l*28*dt,e.radius*0.6); }
+  ud.bound.visible=e.bound>0; ud.pup.visible=e.puppet>0;
+  if(e.bound>0){ e.bound-=dt; if(e.bound<=0) e.fragile=false; syncEnemy(e,dt,0); return; }
+  if(e.stun>0){ e.stun-=dt; if(e.stun<=0&&e.state==='stagger'){ e.state='chase'; } syncEnemy(e,dt,0); return; }
+  // puppet: fights other enemies
+  if(e.puppet>0){
+    e.puppet-=dt; e.pcd-=dt; e.state='puppet';
+    let tg=null,bd=26; for(const o of world.enemies){ if(o===e||o.dead) continue; const d=Math.hypot(o.pos.x-e.pos.x,o.pos.z-e.pos.z); if(d<bd){bd=d;tg=o;} }
+    let sp=0;
+    if(tg){ const dx=tg.pos.x-e.pos.x,dz=tg.pos.z-e.pos.z,l=Math.hypot(dx,dz); e.face+=clamp(angDiff(e.face,Math.atan2(dx,dz)),-6*dt,6*dt);
+      if(l>e.radius+tg.radius+1.2){ sp=e.T.chase; slideMove(e.pos,dx/l*sp*dt,dz/l*sp*dt,e.radius*0.6); }
+      else if(e.pcd<=0){ e.pcd=1.1; hurtEnemy(tg,e.dmg*1.5,{nen:true,stagger:0.4}); tg.aggro=true; Aud.hit(); } }
+    if(e.puppet<=0){ e.state='chase'; e.aggro=true; }
+    syncEnemy(e,dt,sp); return;
+  }
+  const dxp=P.pos.x-e.pos.x, dzp=P.pos.z-e.pos.z, dp=Math.hypot(dxp,dzp)-e.radius;
+  const det=detectRadius(e.T.detect);
+  let speed=0;
+  switch(e.state){
+    case 'idle':
+      e.wander.t-=dt; if(e.wander.t<=0){ e.wander.t=3+Math.random()*4; const a=Math.random()*TAU,r=Math.random()*6; e.wander.x=e.home.x+Math.cos(a)*r; e.wander.z=e.home.z+Math.sin(a)*r; }
+      { const dx=e.wander.x-e.pos.x,dz=e.wander.z-e.pos.z,l=Math.hypot(dx,dz); if(l>1){ e.face+=clamp(angDiff(e.face,Math.atan2(dx,dz)),-3*dt,3*dt); speed=e.T.spd*0.5; slideMove(e.pos,dx/l*speed*dt,dz/l*speed*dt,e.radius*0.6);} }
+      if(!P.dead&&dp<det){ e.state='chase'; e.aggro=true; if(e.type==='alpha') { Aud.roar(); toast('The Alpha Foxbear notices you!'); } }
+      break;
+    case 'chase': {
+      if(P.dead){ e.state='idle'; e.aggro=false; break; }
+      if(dp>det*1.8+6&&!P.lock||dp>60){ e.state='idle'; e.aggro=false; break; }   // lost track (Zetsu / distance)
+      enemyFacePlayer(e,dt,5);
+      speed=e.T.chase*e.speedMul; const l=Math.hypot(dxp,dzp)||1;
+      if(dp>1.6) slideMove(e.pos,dxp/l*speed*dt,dzp/l*speed*dt,e.radius*0.6);
+      e.cd-=dt;
+      const maxR = e.type==='alpha'?8:5.5;
+      if(e.cd<=0&&dp<maxR){ startAttack(e,chooseAtk(e)); }
+      break; }
+    case 'windup': {
+      e.t+=dt; const a=e.atk.a;
+      if(e.t<a.wind*0.55) enemyFacePlayer(e,dt,a.kind==='charge'?2.5:6);
+      if(e.atk.name==='charge'&&e.type==='alpha') e.speedMul=e.phase2?1.25:1;
+      // telegraph
+      const prog=clamp(e.t/a.wind,0,1);
+      if(a.tg==='ring'){ e.ring.position.set(e.pos.x,groundY(e.pos.x,e.pos.z)+0.15,e.pos.z); const s=a.range*(0.4+0.6*prog); e.ring.scale.set(s,s,1); e.ring.material.opacity=0.3+0.5*prog; }
+      else { const L=a.dist; const f=fwd(e.face); e.line.position.set(e.pos.x+f.x*L/2,groundY(e.pos.x,e.pos.z)+0.2,e.pos.z+f.z*L/2); e.line.rotation.z=-e.face; e.line.rotation.x=-Math.PI/2; e.line.scale.set(a.kind==='charge'?3.2:2,L,1); e.line.material.opacity=0.2+0.5*prog; }
+      if(e.t>=a.wind){ e.state='strike'; e.t=0; e.strikeDone=false; e.ring.visible=false; e.line.visible=false; e.strikeStart={x:e.pos.x,z:e.pos.z}; }
+      break; }
+    case 'strike': {
+      e.t+=dt; const a=e.atk.a;
+      if(a.kind==='melee'){
+        if(!e.strikeDone){ e.strikeDone=true; Aud.swing(); const dx=P.pos.x-e.pos.x,dz=P.pos.z-e.pos.z,d=Math.hypot(dx,dz)-e.radius;
+          if(d<a.range&&Math.abs(angDiff(e.face,Math.atan2(dx,dz)))<a.arc) hurtPlayer(e.dmg*a.mult*(0.9+Math.random()*0.2),e,a,dx,dz); }
+        if(e.t>0.15){ e.state='recover'; e.t=0; }
+      } else { // lunge / charge: move along facing
+        const dur=a.dur, f=fwd(e.face), sp=a.dist/dur; slideMove(e.pos,f.x*sp*dt,f.z*sp*dt,e.radius*0.6); speed=sp;
+        if(!e.strikeDone){ const dx=P.pos.x-e.pos.x,dz=P.pos.z-e.pos.z,d=Math.hypot(dx,dz)-e.radius; if(d<a.range){ if(hurtPlayer(e.dmg*a.mult*(0.9+Math.random()*0.2),e,a,f.x,f.z)||P.invuln>0) e.strikeDone=true; } }
+        if(e.t>=dur){ e.state='recover'; e.t=0; if(a.kind==='charge'){ e.stun=1.6; e.state='stagger'; e.vulnerable=1.8; toast('The Alpha is winded. Strike now!'); } }
+      }
+      break; }
+    case 'recover': e.t+=dt; if(e.t>=e.atk.a.rec){ e.state='chase'; e.cd=(e.type==='alpha'?0.5:1.0)+Math.random()*0.8; e.atk=null; } break;
+    case 'stagger': e.state='chase'; break;
+  }
+  e.ring.visible=e.state==='windup'&&e.atk&&e.atk.a.tg==='ring';
+  e.line.visible=e.state==='windup'&&e.atk&&e.atk.a.tg==='line';
+  syncEnemy(e,dt,speed);
+}
+function syncEnemy(e,dt,speed){
+  e.pos.y=groundY(e.pos.x,e.pos.z);
+  e.mesh.position.set(e.pos.x,e.pos.y,e.pos.z); e.mesh.rotation.y=e.face;
+  const ud=e.mesh.userData; e.anim=(e.anim||0)+dt*speed*1.6;
+  ud.legs.forEach((l,i)=>{ l.rotation.x=Math.sin(e.anim+(i%2?Math.PI:0)+(i>1?Math.PI:0))*0.6*(speed>0?1:0); });
+  ud.tail.rotation.y=Math.sin(G.t*3+e.pos.x)*0.3;
+  ud.head.rotation.x=e.state==='windup'?-0.5*(e.t/(e.atk?e.atk.a.wind:1)):0;
+  ud.bound.rotation.z+=dt*2; ud.pup.rotation.z+=dt*3;
+}
+
+/* ============================ PLAYER UPDATE ===================== */
+function camForward(){ return {x:-Math.sin(P.cy),z:-Math.cos(P.cy)}; }
+function moveInput(){
+  let ix=0,iz=0;
+  if(K.KeyW) iz+=1; if(K.KeyS) iz-=1; if(K.KeyD) ix+=1; if(K.KeyA) ix-=1;
+  const f=camForward(), r={x:-f.z,z:f.x};
+  let x=f.x*iz+r.x*ix, z=f.z*iz+r.z*ix; const l=Math.hypot(x,z); if(l>0){ x/=l; z/=l; }
+  return {x,z,l};
+}
+function surfaceAt(x,z){ const h=baseH(x,z); return h<0.9?'sand':h>9?'rock':'grass'; }
+function updatePlayer(dt){
+  if(P.dead) return;
+  // camera keys
+  if(K.ArrowLeft) P.cy+=1.8*dt; if(K.ArrowRight) P.cy-=1.8*dt; if(K.ArrowUp) P.cp=clamp(P.cp-1.2*dt,-0.2,1.25); if(K.ArrowDown) P.cp=clamp(P.cp+1.2*dt,-0.2,1.25);
+  // timers
+  if(P.comboT>0) P.comboT-=dt; if(P.invuln>0) P.invuln-=dt; if(P.stun>0) P.stun-=dt; if(P.stDelay>0) P.stDelay-=dt; if(P.noise>0) P.noise-=dt; if(P.hurtT>0) P.hurtT-=dt;
+  for(let i=0;i<4;i++) if(P.cd[i]>0) P.cd[i]-=dt;
+  A.blocks*=Math.pow(0.9,dt); A.dodges*=Math.pow(0.9,dt);
+  // block
+  const wantB=(Mb.r||K.KeyB)&&!P.atk&&!P.dodge&&!P.dash&&P.stun<=0&&S.st>3;
+  if(wantB&&!P.block){ P.blockT=0; } P.block=!!wantB; if(P.block) P.blockT+=dt;
+  // lock-on
+  if(P.lock&&(P.lock.dead||Math.hypot(P.lock.pos.x-P.pos.x,P.lock.pos.z-P.pos.z)>40)) P.lock=null;
+  if(P.lock){ const want=Math.atan2(-(P.lock.pos.x-P.pos.x),-(P.lock.pos.z-P.pos.z)); P.cy+=clamp(angDiff(P.cy,want),-3*dt,3*dt)*0.9; }
+  // movement
+  const mi=moveInput(); let spd=0;
+  const sprint=K.ShiftLeft&&mi.l>0&&S.st>0&&!P.block&&!P.atk;
+  let mx=0,mz=0;
+  if(P.dodge){ P.dodge.t+=dt; const sp=11; mx=P.dodge.dx*sp*dt; mz=P.dodge.dz*sp*dt; if(P.dodge.t>=P.dodge.dur) P.dodge=null; spd=11; }
+  else if(P.dash){ P.dash.t+=dt; mx=P.dash.dx*P.dash.speed*dt; mz=P.dash.dz*P.dash.speed*dt; spd=P.dash.speed;
+    for(const e of world.enemies){ if(e.dead||P.dash.hit.has(e)) continue; if(Math.hypot(e.pos.x-P.pos.x,e.pos.z-P.pos.z)<e.radius+1.4){ P.dash.hit.add(e); hurtEnemy(e,P.dash.dmg,{nen:true,stagger:0.5,knock:3,ambush:true}); Aud.hit(); G.hitstop=0.05; } }
+    if(P.dash.t>=P.dash.dur) P.dash=null; }
+  else if(P.stun>0){ }
+  else if(mi.l>0){
+    let base=5; if(sprint) base=8.4; if(P.block) base*=0.45; if(P.atk) base*=0.3; if(P.zetsu) base*=0.8; if(P.ren) base*=1.1; if(S.bg==='wanderer') base*=1.05;
+    spd=base; mx=mi.x*base*dt; mz=mi.z*base*dt;
+    if(!P.atk&&!P.lock) P.face+=clamp(angDiff(P.face,Math.atan2(mi.x,mi.z)),-14*dt,14*dt);
+    if(P.lock&&!P.atk){ P.face=Math.atan2(P.lock.pos.x-P.pos.x,P.lock.pos.z-P.pos.z); }
+    if(sprint){ S.st-=14*dt; P.stDelay=0.6; P.noise=Math.max(P.noise,0.2); }
+  } else if(P.lock&&!P.atk){ P.face=Math.atan2(P.lock.pos.x-P.pos.x,P.lock.pos.z-P.pos.z); }
+  if(P.kx||P.kz){ mx+=P.kx*dt; mz+=P.kz*dt; P.kx*=Math.pow(0.02,dt); P.kz*=Math.pow(0.02,dt); if(Math.abs(P.kx)+Math.abs(P.kz)<0.1) P.kx=P.kz=0; }
+  if(mx||mz) slideMove(P.pos,mx,mz,0.45);
+  P.speed=spd;
+  // enemy separation
+  for(const e of world.enemies){ if(e.dead) continue; const dx=P.pos.x-e.pos.x,dz=P.pos.z-e.pos.z,l=Math.hypot(dx,dz),m=e.radius+0.5; if(l<m&&l>0.01){ P.pos.x+=dx/l*(m-l)*0.4; P.pos.z+=dz/l*(m-l)*0.4; } }
+  // vertical
+  const gy=groundY(P.pos.x,P.pos.z);
+  if(!P.ground){ P.vy-=22*dt; P.pos.y+=P.vy*dt; if(P.pos.y<=gy){ P.pos.y=gy; P.vy=0; P.ground=true; } }
+  else { if(P.pos.y>gy+0.4&&P.vy===0){ P.ground=false; } else P.pos.y=lerp(P.pos.y,gy,Math.min(1,dt*18)); }
+  // stamina
+  if(!sprint&&!P.block&&P.stDelay<=0) S.st=Math.min(maxST(),S.st+(S.look.style==='evasive'?24:18)*dt);
+  if(P.block) S.st-=2*dt;
+  S.st=clamp(S.st,0,maxST());
+  // footsteps
+  if(P.ground&&spd>1&&!P.dodge){ P.stepD+=spd*dt; if(P.stepD>(sprint?2.4:2.0)){ P.stepD=0; Aud.step(surfaceAt(P.pos.x,P.pos.z)); } }
+  // attack progress
+  if(P.atk){ P.atk.t+=dt; if(!P.atk.done&&P.atk.t>=P.atk.hit){ P.atk.done=true; resolvePlayerHit(P.atk); } if(P.atk.t>=P.atk.dur) P.atk=null; }
+  // hp regen out of combat is deliberately zero; use items/rest
+  updateNenState(dt);
+  // interact prompt: mark herb quest progress count text updated in HUD
+  animatePlayer(dt,spd);
+}
+function animatePlayer(dt,spd){
+  const m=P.mesh, u=m.userData; m.position.set(P.pos.x,P.pos.y,P.pos.z); m.rotation.y=P.face;
+  P.anim+=dt*spd*1.3; const sw=Math.sin(P.anim)*clamp(spd/6,0,1)*0.8;
+  u.legL.rotation.x=sw; u.legR.rotation.x=-sw; u.armL.rotation.x=-sw*0.8; u.armR.rotation.x=sw*0.8;
+  u.torso.rotation.x=0; u.armL.rotation.z=0; u.armR.rotation.z=0; m.rotation.x=0; m.position.y=P.pos.y;
+  if(P.atk){ const p=clamp(P.atk.t/P.atk.dur,0,1); const sg=Math.sin(p*Math.PI); u.armR.rotation.x=-2.2*sg; u.armL.rotation.x=-0.6*sg; u.torso.rotation.y=(P.atk.idx%2?-1:1)*0.5*sg; m.rotation.x=0.15*sg; if(P.atk.kind==='heavy') u.armR.rotation.x=-2.8*sg; } else u.torso.rotation.y=0;
+  if(P.block){ u.armL.rotation.x=-1.4; u.armR.rotation.x=-1.4; u.armL.rotation.z=-0.3; u.armR.rotation.z=0.3; }
+  if(P.dodge){ m.rotation.x=0.6; m.position.y=P.pos.y-0.25; }
+  if(P.hurtT>0) flashMesh(m,true); else flashMesh(m,false);
+  // aura visuals
+  const am=P.auraM; let op=0,col=0xaee6ff,sc=1;
+  if(P.ren){ op=0.5+0.15*Math.sin(G.t*18); sc=1.5+0.1*Math.sin(G.t*14); col=0xffcf6a; }
+  else if(P.ten){ op=0.2; sc=1.05; col=0xaee6ff; }
+  if(P.koT>0){ op=0.25; col=0xff5a3a; }
+  am.material.opacity=op; am.material.color.setHex(col); am.scale.set(0.8*sc,1.25*sc,0.8*sc);
+  P.rings.material.opacity=P.ren?0.7:0; P.rings.position.y=0.4+((G.t*1.4)%1)*1.6; P.rings.scale.setScalar(0.8+0.2*Math.sin(G.t*9));
+  m.traverse(o=>{ if(o.isMesh&&o!==am&&o!==P.rings&&o.material&&o.material.transparent!==undefined){ } });
+  const vis=P.zetsu?0.35:1; m.traverse(o=>{ if(o.isMesh&&o!==am&&o!==P.rings&&o.material){ o.material.transparent=vis<1; o.material.opacity=vis; } });
+}
+function updateCamera(dt){
+  const tx=P.pos.x, ty=P.pos.y+1.6, tz=P.pos.z;
+  const cd=P.cDist, cp=P.cp;
+  let cx=tx+Math.sin(P.cy)*Math.cos(cp)*cd, cy=ty+Math.sin(cp)*cd+0.4, cz=tz+Math.cos(P.cy)*Math.cos(cp)*cd;
+  const gh=groundY(cx,cz)+0.7; if(cy<gh) cy=gh;
+  if(G.shake>0){ cx+=(Math.random()-0.5)*G.shake; cy+=(Math.random()-0.5)*G.shake; G.shake=Math.max(0,G.shake-dt*1.2); }
+  camera.position.set(cx,cy,cz); camera.lookAt(tx,ty,tz);
+}
+
+/* ====================== QUESTS + DIALOGUE ====================== */
+function questText(){
+  const q=S.quests.main; let t='';
+  switch(q.step){
+    case 0: t='Speak with Mito in the village.'; break;
+    case 1: t='Learn Ten from Goro, the old sailor at the pier.'; break;
+    case 2: t='Hunt Foxbears in the woods ('+q.kills+'/3). Try ambushing with Zetsu once you know it.'; break;
+    case 3: t='Take the water divination with Goro.'; break;
+    case 4: t='Defeat the Alpha Foxbear on the northern highlands. Its hide shrugs off plain blows.'; break;
+    case 5: t='Return to Mito.'; break;
+    default: t='Vertical slice complete. Explore, train, craft a technique.'; break;
+  }
+  return t;
+}
+function questTarget(){
+  const q=S.quests.main;
+  switch(q.step){
+    case 0: case 5: return {x:mitoNPC.x,z:mitoNPC.z};
+    case 1: case 3: return {x:goroNPC.x,z:goroNPC.z};
+    case 2: { let b=null,bd=1e9; for(const e of world.enemies){ if(e.dead||e.type!=='foxbear') continue; const d=Math.hypot(e.pos.x-P.pos.x,e.pos.z-P.pos.z); if(d<bd){bd=d;b=e;} } return b?{x:b.pos.x,z:b.pos.z}:null; }
+    case 4: return {x:0,z:-52};
+  }
+  return null;
+}
+function relChange(id,k,v){ const r=S.rel[id]; if(!r) return; r[k]=clamp(r[k]+v,0,100); }
+const DLG={};
+function openDialog(id){ Aud.ui(); setMode('dialog'); G.dialogNode=null; const n=buildDialog(id); showDialog(id,n); }
+function showDialog(id,node){
+  G.dialogNode={id,node};
+  const nm=id==='mito'?'Mito':'Goro';
+  let h='<div class="nm">'+nm+'</div><p>'+node.text+'</p>';
+  node.choices.forEach((c,i)=>{ h+='<button data-act="choice" data-i="'+i+'">'+(i+1)+'. '+c.t+'</button>'; });
+  $('#dlg').innerHTML=h; $('#dlg').style.display='block';
+}
+function pickChoice(i){
+  const d=G.dialogNode; if(!d) return; const c=d.node.choices[i]; if(!c) return;
+  Aud.ui(); const r=c.fn?c.fn():null;
+  if(r==='close'||!r){ if(!r||r==='close'){ closeDialog(); } }
+  else if(typeof r==='object'){ showDialog(d.id,r); }
+  G.abilDirty=true;
+}
+function closeDialog(){ $('#dlg').style.display='none'; G.dialogNode=null; if(G.mode==='dialog') setMode('play'); }
+function buildDialog(id){
+  const q=S.quests.main, hq=S.quests.herb;
+  if(id==='mito'){
+    const ch=[]; let text='';
+    if(q.step===0){
+      text='Mito: "You have that look. Gon had the same one before he went into the woods. The Foxbears have been coming down to the fields, and the old sailor Goro says he can teach you something that might keep you alive. Will you help the village?"';
+      ch.push({t:'I\'ll help. Where do I start?',fn:()=>{ q.step=1; relChange('mito','trust',6); toast('Quest started: A Hunter\'s First Step'); return 'close'; }});
+      ch.push({t:'What is in it for me?',fn:()=>{ q.step=1; relChange('mito','respect',2); relChange('mito','trust',-2); S.jenny+=0; toast('Quest started: A Hunter\'s First Step'); return {text:'Mito: "Honest, at least. The village pays what it can, and there is a letter waiting for those who prove themselves. Go see Goro at the pier."',choices:[{t:'Understood.',fn:()=>'close'}]}; }});
+    } else if(q.step===5){
+      text='Mito: "The whole ridge went quiet. You did it, didn\'t you? Come here. Take this. It is the registration letter for the next Hunter Exam. Whatever you become, come back and tell me how it went."';
+      ch.push({t:'Accept the letter.',fn:()=>{ q.step=6; S.inv.letter=1; S.jenny+=250; gainXP(300); S.license.stage=1; S.faction.village=clamp(S.faction.village+25,0,100); relChange('mito','trust',20); relChange('mito','respect',15); S.flags.sliceDone=true; doSave(true); closeDialog(); showSliceDone(); return 'close'; }});
+    } else {
+      const lines=['Mito: "Careful in the woods. Foxbears are clever. They watch how you fight."','Mito: "Goro is at the pier. He knows more about aura than he lets on."','Mito: "The highlands to the north are no place for the unprepared."'];
+      text=q.step>=6?'Mito: "Whatever the exam holds, you have already earned the right to try."':lines[Math.min(q.step-1,2)];
+    }
+    // side quest
+    if(q.step>=1){
+      if(hq.state===0) ch.push({t:'Is there anything else I can do?',fn:()=>{ hq.state=1; toast('Side quest: Bring Mito 5 Healing Herbs'); return {text:'Mito: "Healing herbs grow in the woods. Bring me five and I will make poultices for the village. I will pay well."',choices:[{t:'I will gather them.',fn:()=>'close'}]}; }});
+      else if(hq.state===1) ch.push({t:'Deliver 5 Healing Herbs ('+(S.inv.herb||0)+'/5)',fn:()=>{ if((S.inv.herb||0)>=5){ S.inv.herb-=5; hq.state=2; S.jenny+=120; gainXP(80); relChange('mito','trust',8); toast('Side quest complete! +120 Jenny'); return {text:'Mito: "That will keep the village in bandages for a month. Thank you."',choices:[{t:'Any time.',fn:()=>'close'}]}; } toast('You need 5 Healing Herbs.'); return 'close'; }});
+    }
+    ch.push({t:'Browse the shop.',fn:()=>{ closeDialog(); openPanel('shop'); return 'close'; }});
+    ch.push({t:'Goodbye.',fn:()=>'close'});
+    return {text,choices:ch};
+  }
+  // Goro
+  const ch=[]; let text='';
+  if(q.step<=0) text='Goro: "Hm. A newcomer. Go talk to Mito first. She decides who I waste my breath on."';
+  else if(!S.nen.unlocked) text='Goro: "Everyone leaks life energy. Most waste it. Ten holds it close around the body: it makes you sturdier and makes your aura calm. That is the first step into Nen. Ready to try?"';
+  else if(q.step===3) text='Goro: "You have fought now, and I watched how. Time for the water divination. A glass of water, a leaf, and your aura. The leaf will answer."';
+  else if(q.step===4) text='Goro: "The Alpha\'s hide shrugs off ordinary blows. Only aura-infused strikes bite: Ren, Ko, or your own technique. And watch its habits. It adapts to yours."';
+  else text='Goro: "Training never ends. The more you repeat a drill, the less you gain in one day, so train a bit, then go live."';
+  if(q.step>=1&&!S.nen.unlocked) ch.push({t:'Start the Ten drill.',fn:()=>{ closeDialog(); startDrill('ten',false); return 'close'; }});
+  if(S.nen.unlocked){
+    ch.push({t:'Train Ten (control)',fn:()=>{ closeDialog(); startDrill('ten',false); return 'close'; }});
+    ch.push({t:'Train Zetsu (needs Ten 10)',fn:()=>{ closeDialog(); startDrill('zetsu',false); return 'close'; }});
+    ch.push({t:'Train Ren (needs Ten 15)',fn:()=>{ closeDialog(); startDrill('ren',false); return 'close'; }});
+  }
+  if(q.step===3&&S.nen.unlocked) ch.push({t:'Take the water divination.',fn:()=>{ closeDialog(); startQuiz(); return 'close'; }});
+  if(q.step>=1) ch.push({t:'Ask about Nen.',fn:()=>{ if(!S.flags.askedLore){ S.flags.askedLore=true; relChange('goro','trust',6); } return {text:'Goro: "Four basics: Ten, Zetsu, Ren, Hatsu. Ten holds aura. Zetsu shuts it off, which hides you but leaves you open. Ren raises output. Hatsu is your own ability. Six categories; the closer two sit on the wheel, the easier you can learn both."',choices:[{t:'Thanks.',fn:()=>'close'}]}; }});
+  ch.push({t:'Leave.',fn:()=>'close'});
+  return {text,choices:ch};
+}
+
+/* ---------- Training drills ---------- */
+let D=null;
+function startDrill(kind,solo){
+  const n=S.nen;
+  if(kind==='zetsu'&&n.ten<10){ toast('Zetsu training requires Ten 10.'); return; }
+  if(kind==='ren'&&n.ten<15){ toast('Ren training requires Ten 15.'); return; }
+  const def=DRILL[kind], m=n[kind]||0;
+  D={kind,solo,round:0,hits:0,p:0.5,dir:1,zoneC:0.3+Math.random()*0.4,zoneW:def.zone*(1-0.35*m/100),speed:def.speed*(1+m/150),log:[],done:false};
+  setMode('drill'); renderDrill();
+}
+function renderDrill(){
+  const def=DRILL[D.kind];
+  let h='<h2>'+def.n+'</h2><p class="sub">'+def.d+(D.solo?' (Solo practice: half gains)':'')+'</p>';
+  h+='<div class="bf"><div class="zone" id="dz" style="left:'+((D.zoneC-D.zoneW/2)*100)+'%;width:'+(D.zoneW*100)+'%"></div><div class="mark" id="dm" style="left:'+(D.p*100)+'%"></div></div>';
+  h+='<p>Round '+Math.min(D.round+1,5)+' / 5 &nbsp; Hits: '+D.hits+'</p><p class="hint">'+(D.log.slice(-1)[0]||'Press SPACE or click PRESS when the marker is in the green band.')+'</p>';
+  if(!D.done) h+='<button class="pri" data-act="drillpress">PRESS (Space)</button> <button data-act="drillquit">Stop</button>';
+  $('#drillc').innerHTML=h; $('#drillov').classList.add('show');
+}
+function updateDrill(dt){
+  if(!D||D.done) return;
+  D.p+=D.dir*D.speed*dt; if(D.p>=1){ D.p=1; D.dir=-1; } if(D.p<=0){ D.p=0; D.dir=1; }
+  const m=$('#dm'); if(m) m.style.left=(D.p*100)+'%';
+}
+function drillPress(){
+  if(!D||D.done) return;
+  const hit=Math.abs(D.p-D.zoneC)<=D.zoneW/2;
+  if(hit){ D.hits++; D.log.push('Hit!'); Aud.tone(700,0.1,'triangle',0.1); } else { D.log.push('Missed.'); Aud.tone(180,0.12,'square',0.08); }
+  D.round++; D.zoneC=0.2+Math.random()*0.6;
+  if(D.round>=5) finishDrill(); else renderDrill();
+}
+function finishDrill(){
+  D.done=true; const n=S.nen; const kind=D.kind; let msg='';
+  const day=dayNo(); if(n.sess.day!==day){ n.sess.day=day; n.sess.n=0; }
+  const fat=n.sess.n>=3?0.4:1; n.sess.n++;
+  if(kind==='ten'&&!n.unlocked){
+    if(D.hits>=3){ n.unlocked=true; n.ten=Math.max(n.ten,6); S.aura=maxAura(); relChange('goro','trust',10);
+      if(S.quests.main.step===1){ S.quests.main.step=2; }
+      msg='You feel it: a calm sheath of aura around your body. Ten learned! Press T to hold Ten. Aura now appears in your HUD.'; toast('Ten learned!'); }
+    else msg='The aura slips away. Try again (3 hits needed).';
+  } else {
+    const m=n[kind]; const gain=D.hits*2.4/(1+m/25)*fat*(D.solo?0.5:1);
+    n[kind]=Math.min(100,m+gain); msg='+'+gain.toFixed(1)+' '+kind.toUpperCase()+' mastery'+(fat<1?' (fatigued: diminishing returns today)':'')+(kind==='ten'&&D.hits>=3?'':'');
+    if(kind==='zetsu') msg+='. Hold Z to vanish from enemy senses.'; if(kind==='ren') msg+='. Hold R for Ren: stronger, aura-infused strikes.';
+  }
+  const kinds=D.kind;
+  $('#drillc').innerHTML='<h2>Drill complete</h2><p>Hits: '+D.hits+' / 5</p><p class="good">'+msg+'</p><button class="pri" data-act="drillquit">Continue</button>';
+  G.abilDirty=true;
+}
+function endDrill(){ $('#drillov').classList.remove('show'); D=null; setMode('play'); }
+
+/* ---------- Water divination (Nen affinity assessment) ---------- */
+function startQuiz(){ G.quizAns=[]; setMode('menu'); G.panelTab='quiz'; renderQuiz(0); }
+function renderQuiz(i){
+  if(i>=QUIZ.length){ finishQuiz(); return; }
+  const Q=QUIZ[i]; let h='<h2>Water Divination</h2><p class="sub">Question '+(i+1)+' of '+QUIZ.length+'. Your answers AND how you have fought so far both shape the result. (This is the game\'s interpretation, not canon.)</p><p style="font-size:16px;margin:10px 0">'+Q.q+'</p>';
+  Q.a.forEach((a,j)=>{ h+='<div><button data-act="quiz" data-q="'+i+'" data-a="'+j+'" style="text-align:left;width:100%">'+a[0]+'</button></div>'; });
+  showOv(h);
+}
+function finishQuiz(){
+  const sc={}; CATS.forEach(c=>sc[c]=0);
+  G.quizAns.forEach((aj,i)=>{ const w=QUIZ[i].a[aj][1]; for(const k in w) sc[k]+=w[k]; });
+  const st=S.stats;
+  sc.Enhancement+=Math.min(st.attacks+st.heavy*2,45)*0.06;
+  sc.Transmutation+=Math.min(st.dodges,20)*0.08;
+  sc.Manipulation+=Math.min(st.blocks,15)*0.1;
+  sc.Conjuration+=Math.min(st.pickups,8)*0.12;
+  sc.Specialization+=Math.min(st.zetsu,60)/60*0.8;
+  sc.Emission+=Math.min(st.dodges+st.blocks,30)*0.02; // keeping distance and watching: small term
+  sc.Specialization*=0.8; // rare category
+  let best=CATS[0]; CATS.forEach(c=>{ if(sc[c]>sc[best]) best=c; });
+  S.nen.cat=best; S.nen.divined=true; S.nen.aff={}; CATS.forEach(c=>S.nen.aff[c]=affinity(best,c));
+  if(S.quests.main.step===3) S.quests.main.step=4;
+  relChange('goro','respect',8); G.abilDirty=true; doSave(true);
+  const info=CATINFO[best];
+  let h='<h2>The leaf answers: <span style="color:'+info.col+'">'+best+'</span></h2><p>'+info.d+'</p><h3>Affinity</h3>';
+  CATS.forEach(c=>{ h+='<div class="kv"><span style="color:'+CATINFO[c].col+'">'+c+'</span><span>'+affinity(best,c)+'% learning efficiency</span></div>'; });
+  h+='<p class="sub" style="margin-top:8px">Unlocked: signature technique <b>'+SIG[best].name+'</b> (key 1). You can now design your own techniques in the Nen menu (N). Any category can still be learned, just less efficiently.</p>';
+  h+='<button class="pri" data-act="closeov">Continue</button>';
+  showOv(h); toast('Quest updated: defeat the Alpha Foxbear.');
+}
+
+/* =============================== SAVE ========================== */
+const SAVE_KEY='hxh3d_whale_island_v1';
+function doSave(silent){
+  try{
+    S.pos={x:P.pos.x,z:P.pos.z}; const copy=JSON.parse(JSON.stringify(S)); copy.savedAt=Date.now();
+    localStorage.setItem(SAVE_KEY,JSON.stringify(copy)); if(!silent) toast('Game saved.'); return true;
+  }catch(e){ if(!silent) toast('Save failed (storage unavailable).'); return false; }
+}
+function sanitize(o){
+  const base=newState();
+  function merge(b,s){
+    if(b===null||typeof b!=='object'||Array.isArray(b)){
+      if(Array.isArray(b)){ return Array.isArray(s)?s.slice(0,64):b; }
+      if(typeof b==='number'){ return typeof s==='number'&&isFinite(s)?s:b; }
+      if(typeof b==='string'){ return typeof s==='string'?s.slice(0,200):b; }
+      if(typeof b==='boolean'){ return typeof s==='boolean'?s:b; }
+      return s===undefined?b:s;
+    }
+    const out={}; for(const k in b){ out[k]=merge(b[k],s&&typeof s==='object'?s[k]:undefined); }
+    if(s&&typeof s==='object'){ for(const k in s){ if(!(k in b)&&['divined','savedAt','ranged'].includes(k)) out[k]=s[k]; } }
+    return out;
+  }
+  const r=merge(base,o);
+  // dynamic maps need explicit handling
+  r.inv={}; if(o&&o.inv&&typeof o.inv==='object'){ for(const k in o.inv){ if(ITEMS[k]&&typeof o.inv[k]==='number'&&o.inv[k]>0) r.inv[k]=Math.floor(Math.min(o.inv[k],999)); } }
+  r.customs=[null,null]; if(o&&Array.isArray(o.customs)){ for(let i=0;i<2;i++){ const c=o.customs[i]; if(c&&typeof c==='object'&&EFFECTS[c.eff]&&CATS.includes(c.cat)){ const vv=Array.isArray(c.vows)?c.vows.filter(v=>VOWS[v]).slice(0,2):[]; const chk={name:String(c.name||'Ability').slice(0,24),cat:c.cat,eff:c.eff,power:clamp(+c.power||1,1,10),range:clamp(+c.range||2,2,26),cd:clamp(+c.cd||1,1,20),vows:vv}; const v=validateAbility(chk); if(v.ok||true){ r.customs[i]=Object.assign(chk,{id:'c'+i,cost:Math.max(6,Math.round(+c.cost||v.cost))}); } } } }
+  if(o&&o.nen&&o.nen.aff&&typeof o.nen.aff==='object') r.nen.aff=o.nen.aff; else r.nen.aff=null;
+  r.nen.cat=(o&&o.nen&&CATS.includes(o.nen.cat))?o.nen.cat:null;
+  r.nen.divined=!!(o&&o.nen&&o.nen.divined&&r.nen.cat);
+  r.taken=(o&&Array.isArray(o.taken)?o.taken.filter(x=>typeof x==='string'):[]).slice(0,40);
+  r.level=clamp(Math.floor(r.level),1,30); r.hp=clamp(r.hp,1,9999);
+  r.quests.main.step=clamp(Math.floor(r.quests.main.step),0,6);
+  return r;
+}
+function loadSave(){
+  let raw=null; try{ raw=localStorage.getItem(SAVE_KEY); }catch(e){}
+  if(!raw){ toast('No saved game found.'); return false; }
+  try{ const o=JSON.parse(raw); S=sanitize(o); applyLoaded(); return true; }
+  catch(e){ toast('Save file is corrupted.'); return false; }
+}
+function applyLoaded(){
+  rebuildPlayerMesh(); placePlayer(S.pos.x,S.pos.z); P.dead=false; P.ten=P.ren=P.zetsu=false; P.lock=null; P.cd=[0,0,0,0];
+  S.hp=clamp(S.hp,1,maxHP()); S.st=maxST(); S.aura=clamp(S.aura,0,maxAura());
+  buildEnemies();
+  for(const h of world.herbs){ h.dead=S.taken.includes(h.id); h.mesh.visible=!h.dead; }
+  hideOv(); $('#hud').style.display='block'; setMode('play'); G.abilDirty=true;
+}
+
+/* ============================ INVENTORY ======================== */
+function useItem(id){
+  const it=ITEMS[id]; if(!it||!it.use||!(S.inv[id]>0)) return;
+  const r=it.use(); if(r===false) return;
+  S.inv[id]--; if(S.inv[id]<=0) delete S.inv[id]; Aud.ui(); refreshPanel();
+}
+function buyItem(id){ const it=ITEMS[id]; if(!it||!it.buy) return; if(S.jenny<it.buy){ toast('Not enough Jenny.'); return; } S.jenny-=it.buy; S.inv[id]=(S.inv[id]||0)+1; Aud.ui(); relChange('mito','trust',0.5); refreshPanel(); }
+function sellItem(id){ const it=ITEMS[id]; if(!it||!(it.sell>0)||!(S.inv[id]>0)) return; S.inv[id]--; if(S.inv[id]<=0) delete S.inv[id]; S.jenny+=it.sell; Aud.ui(); refreshPanel(); }
+
+/* ================================ UI =========================== */
+function setMode(m){ G.mode=m; if(m!=='play'&&document.pointerLockElement&&document.exitPointerLock) document.exitPointerLock(); }
+function toast(t){ const d=document.createElement('div'); d.className='toast'; d.textContent=t; $('#toasts').appendChild(d); setTimeout(()=>d.remove(),3700); while($('#toasts').children.length>4) $('#toasts').firstChild.remove(); }
+function showOv(h){ $('#ovc').innerHTML=h; $('#ov').classList.add('show'); }
+function hideOv(){ $('#ov').classList.remove('show'); }
+function bar(label,val,max,cls){ return '<div class="bar '+cls+'"><i style="width:'+clamp(val/max*100,0,100)+'%"></i><span>'+label+'</span></div>'; }
+
+/* ---- Title / creation / research ---- */
+function showTitle(){
+  setMode('title'); $('#hud').style.display='none';
+  let hasSave=false; try{ hasSave=!!localStorage.getItem(SAVE_KEY); }catch(e){}
+  showOv('<h1>HUNTER x HUNTER</h1><h2>Whale Island: Nen RPG Vertical Slice</h2><p>An unofficial fan project. A playable 3D third-person action RPG slice built on Three.js. Create a Hunter, learn Ten, find your Nen category through the water divination, and face the Alpha Foxbear.</p><p class="sub">Original characters and techniques are marked as original. Placeholder procedural models, no copyrighted audio.</p><div style="margin-top:10px"><button class="pri" data-act="newgame">New Game</button><button data-act="loadgame" '+(hasSave?'':'disabled')+'>Load Game</button><button data-act="research">Research Index</button></div>');
+}
+function showCreate(){
+  const L=S.look;
+  const skins=['#f1c9a0','#e0ac82','#c68863','#8d5a3c','#5c3a24'];
+  let h='<h2>Create your Hunter</h2><p class="sub">You are an original character in the Hunter x Hunter world (not Gon). The preview updates live behind this panel.</p><div class="row"><div class="col">';
+  h+='<label>Name</label><input id="f_name" maxlength="16" value="'+esc(S.name)+'">';
+  h+='<label>Background</label><select id="f_bg"><option value="fisher">Island fisher (+10 stamina)</option><option value="wanderer">Wanderer (+10 HP, slightly faster)</option><option value="scholar">Scholar (+10 aura capacity)</option></select>';
+  h+='<label>Combat style</label><select id="f_style"><option value="brawler">Brawler (+15% melee damage)</option><option value="evasive">Evasive (cheaper dodge, faster stamina regen)</option><option value="guardian">Guardian (blocks cost less and absorb more)</option></select>';
+  h+='<label>Build</label><select id="f_build"><option value="slim">Slim</option><option value="average">Average</option><option value="strong">Strong (+15 HP, +12% damage)</option></select>';
+  h+='</div><div class="col"><label>Skin tone</label><select id="f_skin">'+skins.map(s=>'<option value="'+s+'" style="background:'+s+'">'+s+'</option>').join('')+'</select>';
+  h+='<label>Hairstyle</label><select id="f_hs"><option value="spiky">Spiky</option><option value="short">Short</option><option value="long">Long</option></select>';
+  h+='<label>Hair color</label><input type="color" id="f_hair" value="'+L.hair+'">';
+  h+='<label>Outfit color</label><input type="color" id="f_out" value="'+L.outfit+'">';
+  h+='</div></div><div style="margin-top:12px"><button class="pri" data-act="startgame">Begin on Whale Island</button><button data-act="title">Back</button></div>';
+  showOv(h); $('#ov').style.background='rgba(4,8,16,.2)'; $('#ov').style.justifyContent='flex-start';
+  $('#f_bg').value=S.bg; $('#f_style').value=L.style; $('#f_build').value=L.build; $('#f_skin').value=L.skin; $('#f_hs').value=L.hairStyle;
+}
+function readCreate(){
+  S.name=($('#f_name').value||'Hunter').trim().slice(0,16)||'Hunter'; S.bg=$('#f_bg').value;
+  S.look={skin:$('#f_skin').value,hair:$('#f_hair').value,hairStyle:$('#f_hs').value,outfit:$('#f_out').value,build:$('#f_build').value,style:$('#f_style').value};
+}
+document.addEventListener('input',e=>{
+  if(G.mode==='create'&&e.target.id&&e.target.id.startsWith('f_')){ readCreate(); rebuildPlayerMesh(); placePlayer(0,12); P.face=2.6; }
+  if(G.panelTab==='nen'&&e.target.closest&&e.target.closest('#editor')) updateEditorPreview();
+});
+function showResearch(){
+  const R=RESEARCH; let h='<h2>Research Index</h2><p class="sub">'+R.note+'</p><h3>Sources</h3><table><tr><th>Source</th><th>Status</th></tr>';
+  R.sources.forEach(s=>{ h+='<tr><td><a style="color:#8fd0ff" target="_blank" rel="noopener" href="'+s.u+'">'+s.n+'</a></td><td>'+s.st+'</td></tr>'; });
+  h+='</table><h3>Story arcs (chronological)</h3><table><tr><th>Arc</th><th>2011 anime</th><th>Notes / game relevance</th><th>Confidence</th></tr>';
+  R.arcs.forEach(a=>{ h+='<tr><td>'+a[0]+'</td><td>'+a[1]+'</td><td>'+a[2]+'</td><td>'+a[3]+'</td></tr>'; });
+  h+='</table><h3>Nen rules used</h3><ul>'+R.nen.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+  h+='<h3>Canon vs. original in this game</h3><ul>'+R.canonVsOriginal.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+  h+='<h3>Open questions / unresolved</h3><ul>'+R.unknown.map(x=>'<li>'+x+'</li>').join('')+'</ul><button data-act="title">Back</button>';
+  showOv(h);
+}
+const RESEARCH={
+  note:'Honest status: this index was assembled from the model\'s background knowledge plus one live fetch of the official Shonen Jump page. It has NOT been checked chapter-by-chapter. Entries marked "recalled" need verification against the manga before they are treated as canon.',
+  sources:[
+    {n:'Shonen Jump official HUNTER x HUNTER page',u:'https://www.shonenjump.com/j/rensai/hunter/index.html',st:'FETCHED. Confirms: author Yoshihiro Togashi, serialization began in 1998 issue 14, collected volumes listed up to Vol. 39, official synopsis (Gon takes the Hunter Exam with Leorio, Kurapika, Killua). Has no arc/chapter index.'},
+    {n:'HxH Wiki (unofficial)',u:'https://www.hxhwiki.com/',st:'Not fetched in this build. Intended for cross-checking terminology only; the manga is primary canon.'},
+    {n:'Manga chapters / volumes',u:'https://www.shonenjump.com/j/rensai/_list/hunter/',st:'Chapter-level citations are PENDING. Volume 39 is the latest the official page lists.'}
+  ],
+  arcs:[
+    ['Hunter Exam','Ep. 1-21','Whale Island start, the exam stages, first meetings with Leorio, Kurapika, Killua, Hisoka. Used for tone and setting.','recalled (anime ranges well known)'],
+    ['Zoldyck Family','Ep. 22-26','Killua\'s family; introduces Nen via Wing/Zushi later.','recalled'],
+    ['Heavens Arena','Ep. 27-35','Nen basics (Ten, Zetsu, Ren, Hatsu) taught by Wing; Hisoka fight.','recalled'],
+    ['Yorknew City','Ep. 36-58','Phantom Troupe, Kurapika\'s chains, mafia auction.','recalled'],
+    ['Greed Island','Ep. 59-75','Game inside a game; card system.','recalled'],
+    ['Chimera Ant','Ep. 76-136','Longest arc; NGL; Meruem and the Royal Guards.','recalled'],
+    ['Chairman Election','Ep. 137-148','End of the 2011 anime (Ep. 148).','recalled'],
+    ['Dark Continent / Succession Contest','Manga only','Black Whale expedition and the Kakin succession contest. Not adapted by the 2011 anime. Chapter ranges and current status must be verified; the series has long hiatuses.','UNVERIFIED'],
+    ['1999 anime','(1999 series)','Adapts the early arcs through Greed Island with differences from the manga; not used as canon here.','recalled']
+  ],
+  nen:[
+    'Four principles: Ten (hold aura around body), Zetsu (shut off aura, hides presence but leaves you defenseless), Ren (raise output), Hatsu (individual ability).',
+    'Six categories: Enhancement, Transmutation, Emission, Specialization, Conjuration, Manipulation. Affinity follows the commonly cited hexagon chart: own category 100%, neighbors 80%, two steps 60%, opposite 40%. Exact placement of Specialization on the ring is simplified here.',
+    'Ko (focus aura in one point, leaving other areas weak) is implemented as a heavy strike followed by a vulnerability window.',
+    'Vows/conditions: stronger abilities come from stricter conditions. In the editor every vow is enforced in gameplay and is not a free power toggle.',
+    'Not yet implemented: Gyo, In, En, Shu, Ken, Ryu (listed in the design brief, deferred past the vertical slice).'
+  ],
+  canonVsOriginal:[
+    'CANON-INSPIRED: Whale Island setting, Mito, Foxbears, Ten/Zetsu/Ren/Hatsu, six categories, Ko, the water divination idea.',
+    'ORIGINAL: the player character, Goro, the Alpha Foxbear, the quest "A Hunter\'s First Step", all signature techniques (Aura Rush, Elastic Pull, Aura Bolt, Conjured Chains, Puppet Thread, Siphon Palm), and the ability editor.',
+    'Hunter progression labels (Examinee, Licensed Hunter...) are game labels, NOT verified official terminology.',
+    'Established characters such as Gon, Killua, Kurapika, Hisoka, Wing and Biscuit are not included yet (they need careful canon research before being written).'
+  ],
+  unknown:['Whether every Greed Island rule and card detail used in later phases matches the manga exactly (to verify).','The current publication state of the manga after Vol. 39 (to verify).','Detailed Dark Continent facts (kept separate from original worldbuilding).']
+};
+
+/* ---- HUD ---- */
+function buildAbilBar(){
+  let h=''; for(let i=0;i<4;i++){ const a=getSlot(i); const lock=!a;
+    h+='<div class="slot'+(lock?' lock':'')+'"><b>['+(i+1)+']</b>'+(a?esc(a.name).slice(0,16):(i===0?'Locked':i===1?'Locked':'Empty'))+'<div class="hint" style="font-size:10px">'+(a?a.cost+' aura':'')+'</div><div class="cdo" id="cd'+i+'"></div></div>'; }
+  $('#abil').innerHTML=h; G.abilDirty=false;
+}
+function updateHUD(){
+  const mh=maxHP(),ms=maxST(),ma=maxAura();
+  $('#pname').textContent=S.name+'  Lv '+S.level+'  ('+S.xp+'/'+xpNeed()+' XP)  J'+S.jenny;
+  $('#hpb').style.width=clamp(S.hp/mh*100,0,100)+'%'; $('#hpt').textContent=Math.ceil(S.hp)+' / '+mh;
+  $('#stb').style.width=clamp(S.st/ms*100,0,100)+'%';
+  $('#aub').style.width=ma?clamp(S.aura/ma*100,0,100)+'%':'0%'; $('#aut').textContent=ma?Math.ceil(S.aura)+' / '+ma+' aura':'aura locked';
+  let ch=''; if(P.ten) ch+='<span class="tag">Ten</span>'; if(P.ren) ch+='<span class="tag" style="border-color:#ffcf6a">Ren</span>'; if(P.zetsu) ch+='<span class="tag" style="border-color:#c8a8ff">Zetsu</span>';
+  if(P.koT>0) ch+='<span class="tag bad">Ko exposed '+P.koT.toFixed(1)+'s</span>'; if(P.tenSealed>0) ch+='<span class="tag bad">Ten sealed</span>'; if(P.block) ch+='<span class="tag">Guard</span>';
+  $('#chips').innerHTML=ch;
+  const q=questText(); const tgt=questTarget(); let dist=''; if(tgt) dist=' <span class="hint">('+Math.round(Math.hypot(tgt.x-P.pos.x,tgt.z-P.pos.z))+' m)</span>';
+  let qh='<b>A Hunter\'s First Step</b><br>'+q+dist;
+  if(S.quests.herb.state===1) qh+='<br><b>Side:</b> Bring Mito 5 Healing Herbs ('+(S.inv.herb||0)+'/5)';
+  $('#qt').innerHTML=qh;
+  if(G.abilDirty) buildAbilBar();
+  for(let i=0;i<4;i++){ const el=$('#cd'+i); if(el){ const f=P.cd[i]>0?P.cd[i]/P.cdMax[i]:0; el.style.height=(f*100)+'%'; } }
+  const al=world.enemies.find(e=>e.type==='alpha'&&!e.dead&&e.aggro);
+  if(al){ $('#boss').style.display='block'; $('#bossn').textContent=al.T.name+(al.phase2?' (Enraged)':''); $('#bossb').style.width=(al.hp/al.maxhp*100)+'%'; } else $('#boss').style.display='none';
+  const tg=P.lock||G.lastHit; if(tg&&!tg.dead&&Math.hypot(tg.pos.x-P.pos.x,tg.pos.z-P.pos.z)<35&&!al){ $('#tgt').innerHTML=esc(tg.T.name)+' Lv'+tg.lvl+' '+Math.ceil(tg.hp)+'/'+tg.maxhp+(tg.bound>0?' [BOUND]':'')+(tg.puppet>0?' [PUPPET]':''); } else $('#tgt').textContent='';
+  const it=nearestInteract(); const pr=$('#prompt'); if(it&&G.mode==='play'){ pr.style.display='block'; pr.textContent='[E] '+it.label; } else pr.style.display='none';
+  const lr=$('#lockr'); if(P.lock&&!P.lock.dead){ const v=new THREE.Vector3(P.lock.pos.x,P.lock.pos.y+1.6*P.lock.T.scale*0.7,P.lock.pos.z).project(camera); if(v.z<1){ lr.style.display='block'; lr.style.left=((v.x*0.5+0.5)*innerWidth)+'px'; lr.style.top=((-v.y*0.5+0.5)*innerHeight)+'px'; } else lr.style.display='none'; } else lr.style.display='none';
+  const dirs=['N','NE','E','SE','S','SW','W','NW']; const f=camForward(); const hd=Math.atan2(f.x,-f.z); const di=Math.round(((hd+TAU)%TAU)/(TAU/8))%8;
+  const hh=Math.floor(hoursToday()), mm=Math.floor((hoursToday()%1)*60);
+  $('#comp').textContent=dirs[di]+'  |  '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+}
+/* ---- maps ---- */
+const mapImg=(function(){
+  const cv=document.createElement('canvas'); cv.width=cv.height=190; const cx=cv.getContext('2d');
+  if(!cx) return cv;
+  for(let j=0;j<190;j++) for(let i=0;i<190;i++){ const x=i-95,z=j-95,h=baseH(x,z); let c; if(h<-0.3)c='#1d4f7a'; else if(h<0.5)c='#c9bd85'; else if(h<8)c=h<2.6&&Math.hypot(x,z-10)<18?'#9b8f6a':'#3c7a3c'; else if(h<13)c='#7a766c'; else c='#a7a69c'; cx.fillStyle=c; cx.fillRect(i,j,1,1); }
+  return cv;
+})();
+function drawMap(cv,big){
+  const cx=cv.getContext('2d'); if(!cx) return; const s=cv.width; const k=s/190;
+  cx.clearRect(0,0,s,s); cx.save();
+  if(!big){ cx.beginPath(); cx.arc(s/2,s/2,s/2,0,TAU); cx.clip(); }
+  cx.drawImage(mapImg,0,0,s,s);
+  const X=x=>(x+95)*k, Z=z=>(z+95)*k;
+  cx.fillStyle='#7dffa0'; world.herbs.forEach(h=>{ if(!h.dead){ cx.fillRect(X(h.x)-1.5,Z(h.z)-1.5,3,3); } });
+  cx.fillStyle='#ffd36b'; world.npcs.forEach(n=>{ cx.beginPath(); cx.arc(X(n.x),Z(n.z),big?4:3,0,TAU); cx.fill(); if(big){ cx.fillText(n.name,X(n.x)+6,Z(n.z)); } });
+  cx.fillStyle='#ff9a30'; [[4,8],[fl2p.x,fl2p.z]].forEach(p=>{ cx.fillRect(X(p[0])-2,Z(p[1])-2,4,4); });
+  world.enemies.forEach(e=>{ if(e.dead) return; cx.fillStyle=e.type==='alpha'?'#ff2a2a':'#ff7a7a'; cx.beginPath(); cx.arc(X(e.pos.x),Z(e.pos.z),e.type==='alpha'?(big?5:4):2.5,0,TAU); cx.fill(); });
+  const t=questTarget(); if(t){ cx.strokeStyle='#fff3a0'; cx.lineWidth=2; cx.beginPath(); cx.arc(X(t.x),Z(t.z),big?9:6,0,TAU); cx.stroke(); }
+  cx.translate(X(P.pos.x),Z(P.pos.z)); cx.rotate(-P.face+Math.PI); cx.fillStyle='#fff'; cx.beginPath(); cx.moveTo(0,-6); cx.lineTo(4,5); cx.lineTo(-4,5); cx.closePath(); cx.fill();
+  cx.restore();
+}
+
+/* ---- panels ---- */
+const TABS=[['character','Character (C)'],['inventory','Inventory (I)'],['nen','Nen (N)'],['journal','Journal (J)'],['relations','Relations (K)'],['map','Map (M)'],['hunter','License (H)'],['system','System (Esc)']];
+function openPanel(tab){ if(G.mode==='play'||G.mode==='menu'){ setMode('menu'); G.panelTab=tab; renderPanel(); $('#ov').style.background='rgba(4,8,16,.74)'; $('#ov').style.justifyContent='center'; } }
+function closePanel(){ hideOv(); setMode('play'); }
+function refreshPanel(){ if(G.mode==='menu') renderPanel(); }
+function renderPanel(){
+  const t=G.panelTab; let h='<div class="tabs">'+TABS.map(x=>'<button class="'+(x[0]===t?'on':'')+'" data-act="tab" data-t="'+x[0]+'">'+x[1]+'</button>').join('')+'<button data-act="closepanel" style="margin-left:auto">Close</button></div>';
+  h+=({character:panelCharacter,inventory:panelInventory,nen:panelNen,journal:panelJournal,relations:panelRelations,map:panelMap,hunter:panelHunter,system:panelSystem,shop:panelShop}[t]||panelCharacter)();
+  showOv(h);
+  if(t==='map'){ const cv=$('#bigmap'); if(cv) drawMap(cv,true); }
+  if(t==='nen') updateEditorPreview();
+}
+function panelCharacter(){
+  const L=S.look, mh=maxHP();
+  let h='<h2>'+esc(S.name)+'</h2><p class="sub">Background: '+S.bg+' | Style: '+L.style+' | Build: '+L.build+'</p><div class="row"><div class="col">';
+  h+=bar('HP '+Math.ceil(S.hp)+'/'+mh,S.hp,mh,'hp')+bar('Stamina '+Math.ceil(S.st)+'/'+maxST(),S.st,maxST(),'st')+bar(maxAura()?'Aura '+Math.ceil(S.aura)+'/'+maxAura():'Aura locked',S.aura,Math.max(1,maxAura()),'au');
+  h+='<div class="kv"><span>Level</span><span>'+S.level+'</span></div><div class="kv"><span>XP</span><span>'+S.xp+' / '+xpNeed()+'</span></div><div class="kv"><span>Jenny</span><span>'+S.jenny+'</span></div><div class="kv"><span>Playtime</span><span>'+Math.floor(S.playtime/60)+' min</span></div>';
+  h+='</div><div class="col"><h3>Combat record</h3>';
+  const st=S.stats; [['Attacks',st.attacks],['Heavy attacks',st.heavy],['Blocks / parries',st.blocks],['Dodges',st.dodges],['Hatsu uses',st.hatsu],['Enemies defeated',st.kills],['Times defeated',st.deaths],['Herbs gathered',st.pickups]].forEach(r=>{ h+='<div class="kv"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>'; });
+  h+='</div></div>'; return h;
+}
+function panelInventory(){
+  let h='<h2>Inventory</h2><p class="sub">Jenny: '+S.jenny+'</p><table><tr><th>Item</th><th>Qty</th><th>Description</th><th></th></tr>'; let any=false;
+  for(const id in S.inv){ any=true; const it=ITEMS[id]; h+='<tr><td>'+it.n+'</td><td>'+S.inv[id]+'</td><td>'+it.d+'</td><td>'+(it.use?'<button data-act="use" data-id="'+id+'">Use</button>':'')+'</td></tr>'; }
+  if(!any) h+='<tr><td colspan="4">Empty.</td></tr>'; h+='</table>'; return h;
+}
+function panelShop(){
+  let h='<div class="tabs"><button data-act="closepanel">Close</button></div><h2>Mito\'s Shop</h2><p class="sub">Jenny: '+S.jenny+'</p><div class="row"><div class="col"><h3>Buy</h3>';
+  ['herb','fish','tonic'].forEach(id=>{ const it=ITEMS[id]; h+='<div class="kv"><span>'+it.n+' <span class="hint">'+it.d+'</span></span><span>J'+it.buy+' <button data-act="buy" data-id="'+id+'">Buy</button></span></div>'; });
+  h+='</div><div class="col"><h3>Sell</h3>'; let any=false;
+  for(const id in S.inv){ const it=ITEMS[id]; if(it.sell>0){ any=true; h+='<div class="kv"><span>'+it.n+' x'+S.inv[id]+'</span><span>J'+it.sell+' <button data-act="sell" data-id="'+id+'">Sell</button></span></div>'; } }
+  if(!any) h+='<p class="sub">Nothing to sell.</p>'; h+='</div></div>'; return h;
+}
+function panelNen(){
+  const n=S.nen; if(!n.unlocked) return '<h2>Nen</h2><p>You have not awakened your aura. Learn Ten from Goro at the pier.</p>';
+  let h='<h2>Nen</h2><div class="row"><div class="col"><h3>Category</h3>';
+  if(n.cat&&n.divined){ h+='<p><b style="color:'+CATINFO[n.cat].col+'">'+n.cat+'</b></p><p class="sub">'+CATINFO[n.cat].d+'</p>'; CATS.forEach(c=>{ h+='<div class="kv"><span style="color:'+CATINFO[c].col+'">'+c+'</span><span>'+affinity(n.cat,c)+'%</span></div>'; }); }
+  else h+='<p class="sub">Undetermined. Take the water divination with Goro after fighting a few Foxbears.</p>';
+  h+='</div><div class="col"><h3>Mastery</h3>';
+  [['Ten',n.ten,'Damage reduction '+Math.round(tenReduce()*100)+'%'],['Zetsu',n.zetsu,'Enemy detection range x'+(1-(0.55+0.4*n.zetsu/100)).toFixed(2)],['Ren',n.ren,'Output x'+renMult().toFixed(2)],['Hatsu',n.hatsu,'Technique budget bonus +'+(n.hatsu*0.05).toFixed(1)]].forEach(m=>{ h+='<div class="kv"><span>'+m[0]+' <span class="hint">'+m[2]+'</span></span><span>'+m[1].toFixed(1)+' / 100</span></div>'; });
+  h+='<div class="kv"><span>Aura capacity</span><span>'+maxAura()+'</span></div><p class="hint">Controls: T = Ten (toggle), hold Z = Zetsu, hold R = Ren. Training gains shrink as mastery rises and after 3 sessions per in-game day.</p>';
+  h+='<button data-act="solo" data-k="ten">Solo drill: Ten</button><button data-act="solo" data-k="zetsu">Solo drill: Zetsu</button><button data-act="solo" data-k="ren">Solo drill: Ren</button></div></div>';
+  h+='<h3>Equipped techniques</h3><table><tr><th>Key</th><th>Name</th><th>Effect</th><th>Cost</th><th>Cooldown</th><th>Notes</th></tr>';
+  for(let i=0;i<4;i++){ const a=getSlot(i); h+='<tr><td>'+(i+1)+'</td>'+(a?'<td>'+esc(a.name)+'</td><td>'+EFFECTS[a.eff].n+'</td><td>'+a.cost+'</td><td>'+a.cd+'s</td><td>'+(a.d?esc(a.d):(a.vows||[]).map(v=>VOWS[v].n).join('; '))+'</td>':'<td colspan="5" class="sub">'+(i<2?'Locked':'Empty custom slot')+'</td>')+'</tr>'; }
+  h+='</table>';
+  if(n.divined) h+=editorHTML(); else h+='<p class="sub">The technique editor unlocks after the water divination.</p>';
+  return h;
+}
+function editorHTML(){
+  let h='<h3>Hatsu editor (design your own technique)</h3><div id="editor"><div class="row"><div class="col">';
+  h+='<label>Name</label><input id="e_name" maxlength="24" value="My Technique">';
+  h+='<label>Category</label><select id="e_cat">'+CATS.map(c=>'<option>'+c+'</option>').join('')+'</select>';
+  h+='<label>Effect</label><select id="e_eff">'+Object.keys(EFFECTS).map(k=>'<option value="'+k+'">'+EFFECTS[k].n+'</option>').join('')+'</select>';
+  h+='<label>Slot</label><select id="e_slot"><option value="0">Slot 3</option><option value="1">Slot 4</option></select>';
+  h+='</div><div class="col"><label>Power: <span id="e_pv">5</span></label><input type="range" id="e_pow" min="1" max="10" value="5">';
+  h+='<label>Range (m): <span id="e_rv">10</span></label><input type="range" id="e_rng" min="2" max="26" value="10">';
+  h+='<label>Cooldown (s): <span id="e_cv">8</span></label><input type="range" id="e_cd" min="1" max="20" value="8">';
+  h+='<label>Vows (max 2). Each is enforced in play.</label>'+Object.keys(VOWS).map(v=>'<div><label style="display:inline;margin:0"><input type="checkbox" class="e_vow" value="'+v+'"> '+VOWS[v].n+' (+'+VOWS[v].pts+' budget)</label></div>').join('');
+  h+='</div></div><div id="e_prev" class="kv" style="display:block;margin-top:8px"></div><button class="pri" data-act="savehatsu">Save technique</button></div>';
+  return h;
+}
+function readEditor(){
+  return {name:$('#e_name').value,cat:$('#e_cat').value,eff:$('#e_eff').value,power:+$('#e_pow').value,range:+$('#e_rng').value,cd:+$('#e_cd').value,vows:[...document.querySelectorAll('.e_vow:checked')].map(x=>x.value)};
+}
+function updateEditorPreview(){
+  if(!$('#e_name')) return; const f=readEditor(); $('#e_pv').textContent=f.power; $('#e_rv').textContent=f.range; $('#e_cv').textContent=f.cd;
+  const v=validateAbility(f);
+  $('#e_prev').innerHTML='Cost points: <b>'+v.points.toFixed(1)+'</b> / budget <b>'+v.budget.toFixed(1)+'</b> &nbsp; Aura cost: <b>'+v.cost+'</b> &nbsp; '+(v.ok?'<span class="good">Valid</span>':'<span class="bad">Invalid</span>')+(v.msgs.length?'<div class="'+(v.ok?'warn':'err')+'">'+v.msgs.join('<br>')+'</div>':'');
+}
+function saveHatsu(){
+  const f=readEditor(); const v=validateAbility(f); if(!v.ok){ updateEditorPreview(); toast('Technique rejected. See the red notes.'); return; }
+  const slot=+$('#e_slot').value; S.customs[slot]=Object.assign({},f,{id:'c'+slot,name:f.name.trim(),cost:v.cost}); G.abilDirty=true; toast('Saved to slot '+(slot+3)); refreshPanel();
+}
+function panelJournal(){
+  const q=S.quests.main; let h='<h2>Quest Journal</h2><h3>Main: A Hunter\'s First Step (original)</h3><ul>';
+  const steps=['Speak with Mito','Learn Ten from Goro','Hunt 3 Foxbears','Water divination with Goro','Defeat the Alpha Foxbear','Return to Mito'];
+  steps.forEach((s,i)=>{ h+='<li class="'+(q.step>i?'good':q.step===i?'warn':'sub')+'">'+(q.step>i?'[done] ':q.step===i?'[now] ':'')+s+(i===2&&q.step===2?' ('+q.kills+'/3)':'')+'</li>'; });
+  h+='</ul><p class="sub">'+questText()+'</p><h3>Side</h3><ul><li class="'+(S.quests.herb.state===2?'good':S.quests.herb.state===1?'warn':'sub')+'">Mito\'s herbs: '+(S.quests.herb.state===0?'not started (ask Mito)':S.quests.herb.state===1?'bring 5 Healing Herbs ('+(S.inv.herb||0)+'/5)':'complete')+'</li></ul>';
+  h+='<h3>Hints</h3><ul><li>Foxbear attacks show a red ground telegraph. Dodge (Q) through them or block (RMB / B). A block in the first 0.2 s is a parry.</li><li>Zetsu (hold Z) hides you; striking an unaware enemy from Zetsu deals double damage but you take +50% damage while it is active.</li><li>The Alpha adapts: block a lot and it uses an unblockable grab, dodge a lot and it uses wide sweeps.</li></ul>'; return h;
+}
+function panelRelations(){
+  let h='<h2>Relationships &amp; Factions</h2><table><tr><th>Person</th><th>Trust</th><th>Respect</th><th>Fear</th></tr>';
+  [['mito','Mito'],['goro','Goro']].forEach(p=>{ const r=S.rel[p[0]]; h+='<tr><td>'+p[1]+'</td><td>'+Math.round(r.trust)+'</td><td>'+Math.round(r.respect)+'</td><td>'+Math.round(r.fear)+'</td></tr>'; });
+  h+='</table><h3>Faction standing</h3><div class="kv"><span>Whale Island village</span><span>'+Math.round(S.faction.village)+'</span></div><div class="kv"><span>Hunter Association</span><span>'+Math.round(S.faction.hunters)+'</span></div><p class="sub">More factions (Zoldyck family, Phantom Troupe, mafia) arrive with later regions.</p>'; return h;
+}
+function panelMap(){ return '<h2>Whale Island</h2><canvas id="bigmap" width="520" height="520" style="max-width:100%;border:2px solid #36527c;border-radius:8px"></canvas><p class="hint">White arrow: you. Yellow: NPCs. Red: Foxbears (big red: Alpha). Orange squares: campfires. Green: herbs. Ring: current objective.</p>'; }
+function panelHunter(){
+  const l=S.license.stage; let h='<h2>Hunter License</h2>';
+  h+='<div class="kv"><span>Status</span><span>'+(l>=1?'Examinee (registered)':'Unregistered')+'</span></div>';
+  h+='<p class="sub">Progression labels in this game (NOT official terminology): Examinee, Licensed Hunter, Specialist, Expedition. The Hunter Exam itself is the next development phase.</p>';
+  h+='<h3>Requirements</h3><ul><li class="'+(S.inv.letter?'good':'sub')+'">Hunter Exam Registration Letter (earned by completing the main quest)</li><li class="sub">Complete the Hunter Exam (not built yet)</li></ul>'; return h;
+}
+function panelSystem(){
+  const g=G.graphics;
+  let h='<h2>System</h2><div class="row"><div class="col"><button class="pri" data-act="savegame">Save game</button><button data-act="loadgame2">Load game</button><button data-act="title">Quit to title</button>';
+  h+='<h3>Settings</h3><label>Master volume</label><input type="range" id="s_vol" min="0" max="100" value="'+Math.round(Aud.vol*100)+'" data-act="setvol">';
+  h+='<label>Mouse sensitivity</label><input type="range" id="s_sens" min="30" max="250" value="'+Math.round(g.sens*100)+'" data-act="setsens">';
+  h+='<div><label style="display:inline"><input type="checkbox" id="s_shadow" data-act="setshadow" '+(g.shadows?'checked':'')+'> Shadows</label></div>';
+  h+='<div><label style="display:inline"><input type="checkbox" id="s_music" data-act="setmusic" '+(Aud.music?'checked':'')+'> Ambient music</label></div>';
+  h+='<label>Render scale</label><select id="s_res" data-act="setres"><option value="0.7">Low (0.7)</option><option value="1">Medium (1.0)</option><option value="1.5">High (1.5)</option></select>';
+  h+='<label>View distance</label><select id="s_view" data-act="setview"><option value="90">Short</option><option value="170">Normal</option><option value="260">Far</option></select></div>';
+  h+='<div class="col"><h3>Controls</h3><table>';
+  [['WASD','Move'],['Shift','Sprint'],['Space','Jump'],['Mouse (click to capture)','Look; arrow keys also rotate the camera'],['LMB / V','Light attack (3-hit combo)'],['F','Heavy attack'],['RMB / B (hold)','Block; block just before impact = parry'],['Q','Dodge roll (brief invulnerability)'],['Tab','Lock-on / release'],['T','Toggle Ten'],['Hold R','Ren'],['Hold Z','Zetsu'],['1-4','Nen techniques'],['E','Interact / talk / rest'],['I N J C M K H','Inventory, Nen, Journal, Character, Map, Relations, License'],['Esc','This menu']].forEach(r=>{ h+='<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td></tr>'; });
+  h+='</table></div></div>'; return h;
+}
+function showSliceDone(){
+  const st=S.stats;
+  showOv('<h2>Vertical Slice Complete</h2><p>You carry Mito\'s letter toward the Hunter Exam. The Whale Island chapter ends here, but you can keep exploring and training.</p><div class="kv"><span>Level</span><span>'+S.level+'</span></div><div class="kv"><span>Nen category</span><span>'+(S.nen.cat||'?')+'</span></div><div class="kv"><span>Enemies defeated</span><span>'+st.kills+'</span></div><div class="kv"><span>Times defeated</span><span>'+st.deaths+'</span></div><div class="kv"><span>Playtime</span><span>'+Math.floor(S.playtime/60)+' min</span></div><p class="sub">Next phases: Hunter Exam stages, Heavens Arena, more canon characters (after research), more regions.</p><button class="pri" data-act="closeov">Keep exploring</button>');
+  setMode('menu'); G.panelTab='done';
+}
+
+/* ---- click delegation ---- */
+const ACTS={
+  newgame(){ S=newState(); setMode('create'); G.panelTab='create'; rebuildPlayerMesh(); placePlayer(0,12); P.face=2.6; showCreate(); },
+  startgame(){ readCreate(); S.hp=maxHP(); S.st=maxST(); S.nen.aff=null; rebuildPlayerMesh(); placePlayer(0,12); P.face=0; P.cy=Math.PI; P.cp=0.35; P.dead=false;
+    $('#ov').style.background='rgba(4,8,16,.74)'; $('#ov').style.justifyContent='center'; buildEnemies(); world.herbs.forEach(h=>{ h.dead=false; h.mesh.visible=true; });
+    $('#hud').style.display='block'; G.abilDirty=true; setMode('play');
+    showOv('<h2>Welcome to Whale Island, '+esc(S.name)+'</h2><p>Talk to <b>Mito</b> in the village (press E when near). Click the game view to capture the mouse. Open the controls any time with <b>Esc</b>.</p><p class="sub">WASD move | Shift sprint | LMB attack | RMB block | Q dodge | Tab lock-on | E interact</p><button class="pri" data-act="closeov">Begin</button>'); setMode('menu'); G.panelTab='intro'; Aud.init(); },
+  loadgame(){ Aud.init(); if(loadSave()) toast('Game loaded.'); },
+  loadgame2(){ if(loadSave()) toast('Game loaded.'); },
+  title(){ showTitle(); $('#ov').style.background='rgba(4,8,16,.74)'; $('#ov').style.justifyContent='center'; },
+  research(){ showResearch(); },
+  closeov(){ hideOv(); setMode('play'); },
+  closepanel(){ closePanel(); },
+  tab(d){ G.panelTab=d.t; renderPanel(); },
+  use(d){ useItem(d.id); }, buy(d){ buyItem(d.id); }, sell(d){ sellItem(d.id); },
+  choice(d){ pickChoice(+d.i); },
+  drillpress(){ drillPress(); }, drillquit(){ endDrill(); },
+  solo(d){ hideOv(); startDrill(d.k,true); },
+  quiz(d){ G.quizAns[+d.q]=+d.a; renderQuiz(+d.q+1); },
+  savehatsu(){ saveHatsu(); },
+  savegame(){ doSave(false); }, respawn(){ respawn(); },
+  setvol(){ Aud.setVol(+$('#s_vol').value/100); },
+  setsens(){ G.graphics.sens=+$('#s_sens').value/100; },
+  setshadow(){ G.graphics.shadows=$('#s_shadow').checked; renderer.shadowMap.enabled=G.graphics.shadows; sun.castShadow=G.graphics.shadows; scene.traverse(o=>{ if(o.material) o.material.needsUpdate=true; }); },
+  setmusic(){ Aud.music=$('#s_music').checked; },
+  setres(){ G.graphics.res=+$('#s_res').value; renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5)*G.graphics.res/1.0>2?2:(devicePixelRatio||1)*G.graphics.res); },
+  setview(){ G.graphics.view=+$('#s_view').value; scene.fog.far=G.graphics.view; }
+};
+document.body.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const t=b.tagName; if((t==='INPUT'&&b.type==='range')||t==='SELECT') return;
+  const f=ACTS[b.dataset.act]; if(f){ Aud.init(); f(b.dataset); }
+});
+document.body.addEventListener('input',e=>{ const b=e.target.closest('[data-act]'); if(b&&b.type==='range'){ const f=ACTS[b.dataset.act]; if(f) f(b.dataset); } });
+document.body.addEventListener('change',e=>{ const b=e.target.closest('[data-act]'); if(b&&(b.tagName==='SELECT'||b.type==='checkbox')){ const f=ACTS[b.dataset.act]; if(f) f(b.dataset); } });
+
+/* ============================ SKY / TIME ======================== */
+const SKY={night:new THREE.Color(0x070b1c),day:new THREE.Color(0x7ec8ff),dawn:new THREE.Color(0xff9a6b),tmp:new THREE.Color()};
+function updateSky(){
+  const h=hoursToday(), a=(h-6)/12*Math.PI, sy=Math.sin(a), day=clamp(sy*2.2+0.25,0,1);
+  const dawn=clamp(1-Math.abs(sy)*3.5,0,1);
+  SKY.tmp.copy(SKY.night).lerp(SKY.day,day).lerp(SKY.dawn,dawn*0.55);
+  scene.background.copy(SKY.tmp); scene.fog.color.copy(SKY.tmp);
+  const cx=P.pos.x, cz=P.pos.z;
+  sun.position.set(cx+Math.cos(a)*90,Math.max(sy,0.12)*90+8,cz+30); sun.target.position.set(cx,0,cz);
+  sun.intensity=0.05+1.0*day; hemi.intensity=0.22+0.6*day;
+  sunBall.position.set(cx+Math.cos(a)*300,Math.sin(a)*300,cz); sunBall.visible=sy>-0.05;
+  moonBall.position.set(cx-Math.cos(a)*300,-Math.sin(a)*300,cz); moonBall.visible=sy<0.05;
+  stars.material.opacity=clamp(1-day*1.6,0,0.95); stars.position.set(cx,0,cz);
+  water.material.color.setRGB(0.1+0.07*day,0.25+0.2*day,0.35+0.25*day);
+}
+function updateAmbience(){
+  const h=groundY(P.pos.x,P.pos.z); const shore=clamp(1-(h-0.2)/6,0,1)*0.9+(Math.hypot(P.pos.x,P.pos.z)>50?0.1:0); Aud.ambience(shore);
+}
+
+/* ============================ MAIN LOOP ======================== */
+let last=performance.now(), fpsAcc=0, fpsN=0, saveTimer=0;
+function update(dt){
+  S.clock+=dt/60; S.playtime+=dt; G.t+=dt;
+  if(G.hitstop>0){ G.hitstop-=dt; dt*=0.1; }
+  updatePlayer(dt); updateBolts(dt);
+  for(const e of world.enemies){ const d=Math.abs(e.pos.x-P.pos.x)+Math.abs(e.pos.z-P.pos.z); if(d>130&&!e.aggro) continue; updateEnemy(e,dt); }
+  for(const n of world.npcs){ const dx=P.pos.x-n.x,dz=P.pos.z-n.z; if(Math.hypot(dx,dz)<7){ n.mesh.rotation.y+=clamp(angDiff(n.mesh.rotation.y,Math.atan2(dx,dz)),-3*dt,3*dt); } n.mesh.userData.torso.scale.y=1+Math.sin(G.t*1.8)*0.015; }
+  for(const h of world.herbs){ if(!h.dead) h.mesh.rotation.y+=dt; }
+  fire1.fl.scale.y=0.9+0.3*Math.sin(G.t*14); fireLight.intensity=0.7+0.2*Math.sin(G.t*11);
+  saveTimer+=dt; if(saveTimer>90){ saveTimer=0; doSave(true); }
+  updateCamera(dt);
+}
+function frame(now){
+  requestAnimationFrame(frame);
+  let dt=Math.min(0.05,(now-last)/1000||0.016); last=now;
+  fpsAcc+=dt; fpsN++; if(fpsAcc>=0.5){ G.fps=Math.round(fpsN/fpsAcc); fpsAcc=0; fpsN=0; $('#fps').textContent=G.fps+' fps | '+renderer.info.render.calls+' draws';
+    if(G.fps<28&&G.mode==='play'){ G.lowFpsT+=0.5; if(G.lowFpsT>6){ G.lowFpsT=-30; toast('Low frame rate: try System > Render scale / Shadows.'); } } else if(G.lowFpsT>0) G.lowFpsT=0; }
+  if(G.mode==='play'){ update(dt); }
+  else if(G.mode==='drill'){ updateDrill(dt); }
+  else if(G.mode==='title'||G.mode==='create'){
+    G.t+=dt; const a=G.t*0.15; camera.position.set(Math.sin(a)*16,5,12+Math.cos(a)*16); camera.lookAt(0,2.5,10);
+    if(G.mode==='create'&&P.mesh){ camera.position.set(Math.sin(0.7)*5,2.4,12+Math.cos(0.7)*5); camera.lookAt(0,1.5,12); P.mesh.rotation.y=2.6+Math.sin(G.t)*0.4; P.mesh.position.set(0,groundY(0,12),12); }
+  } else if(G.mode==='dialog'||G.mode==='menu'||G.mode==='dead'){ G.t+=dt*0.0; }
+  if(P.mesh&&G.mode==='title') P.mesh.position.set(2,groundY(2,14),14);
+  updateSky(); water.position.y=Math.sin(G.t*0.8)*0.06; updateAmbience();
+  if(G.mode==='play'||G.mode==='dialog'||G.mode==='menu'||G.mode==='drill'||G.mode==='dead'){ updateHUD(); updateDmgNums(dt); G.mapTick++; if(G.mapTick%4===0){ const cv=$('#mmc'); if(cv) drawMap(cv,false); } }
+  renderer.render(scene,camera);
+}
+function boot(){
+  rebuildPlayerMesh(); placePlayer(2,14); buildEnemies(); showTitle();
+  requestAnimationFrame(frame);
+}
+boot();
+window.__hxh={S:()=>S,P,G,world,ACTS,update,updateEnemy,castAbility,tryAttack,tryDodge,hurtEnemy,hurtPlayer,startDrill,drillPress,finishQuiz,validateAbility,sanitize,doSave,loadSave,openDialog,pickChoice,buildDialog,questText,questTarget,rest,respawn,K,Mb,onKeyPress,renderPanel,openPanel,setS:(s)=>{S=s;},newState,affinity,CATS,QUIZ,ITEMS,useItem,getSlot,spawnEnemy,findLand,groundY,baseH,blocked,detectRadius,toggleTen,updateHUD,drawMap,RESEARCH,showResearch,saveHatsu,setMode,killEnemy,frame,GG:()=>G};
+</script>
+</body>
+</html>
